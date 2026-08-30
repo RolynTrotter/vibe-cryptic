@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Cryptic Crossword</title>
+</head>
+<body>
+<!-- ARTIFACT-BODY-START -->
+<style>
+  /* Light is the base palette; the dark blocks below only redefine tokens, so
+     no colour has its sole definition inside a media query. */
+  :root {
+    color-scheme: light dark;
+    --bg: #f1f2f4;
+    --surface: #ffffff;
+    --ink: #17191c;
+    --ink-soft: #565b63;
+    --ink-faint: #868c95;
+    --rule: #c6cad1;
+    --rule-strong: #17191c;
+    --block: #17191c;
+    --cell: #ffffff;
+    --cell-entry: #dfe8f5;
+    --cell-cross: #eef2f8;
+    --cell-cursor: #ffd97a;
+    --accent: #1f4e8c;
+    --accent-ink: #ffffff;
+    --wrong: #a32b1c;
+    --pencil: #7a7770;
+    --shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 14px rgba(0,0,0,.06);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16171a;
+      --surface: #1e2024;
+      --ink: #ecebe7;
+      --ink-soft: #a9a7a1;
+      --ink-faint: #7d7b76;
+      --rule: #3a3d43;
+      --rule-strong: #ecebe7;
+      --block: #0d0e10;
+      --cell: #24272c;
+      --cell-entry: #2b3a52;
+      --cell-cross: #24303f;
+      --cell-cursor: #8a6d1f;
+      --accent: #7aa7e0;
+      --accent-ink: #16171a;
+      --wrong: #ef8878;
+      --pencil: #8f8d87;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16171a;
+    --surface: #1e2024;
+    --ink: #ecebe7;
+    --ink-soft: #a9a7a1;
+    --ink-faint: #7d7b76;
+    --rule: #3a3d43;
+    --rule-strong: #ecebe7;
+    --block: #0d0e10;
+    --cell: #24272c;
+    --cell-entry: #2b3a52;
+    --cell-cross: #24303f;
+    --cell-cursor: #8a6d1f;
+    --accent: #7aa7e0;
+    --accent-ink: #16171a;
+    --wrong: #ef8878;
+    --pencil: #8f8d87;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 16px 64px; }
+
+  header.masthead {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+    padding-bottom: 10px; margin-bottom: 14px;
+    border-bottom: 2px solid var(--rule-strong);
+  }
+  .masthead h1 {
+    font: 600 22px/1.2 ui-serif, Georgia, "Times New Roman", serif;
+    margin: 0; letter-spacing: .01em;
+  }
+  .byline { color: var(--ink-soft); font-size: 13px; }
+  .spacer { flex: 1 1 auto; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button {
+    font: inherit; font-size: 13px; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; padding: 6px 11px; cursor: pointer;
+  }
+  button:hover { border-color: var(--ink-faint); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button[aria-pressed="true"] {
+    background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+  }
+  .menu { position: relative; }
+  .menu-items {
+    position: absolute; z-index: 20; top: calc(100% + 4px); left: 0;
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; box-shadow: var(--shadow); padding: 4px; min-width: 150px;
+  }
+  .menu-items button {
+    display: block; width: 100%; text-align: left; border: 0;
+    background: transparent; border-radius: 6px;
+  }
+  .menu-items button:hover { background: var(--cell-cross); }
+  .timer {
+    font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-soft);
+    min-width: 52px; text-align: right;
+  }
+
+  .instructions {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px;
+    font-size: 14px;
+  }
+
+  .board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  @media (min-width: 860px) {
+    .board { grid-template-columns: minmax(320px, 1fr) minmax(300px, 1fr); align-items: start; }
+  }
+
+  .current-clue {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: var(--radius); padding: 10px 14px; margin-bottom: 12px;
+    box-shadow: var(--shadow); min-height: 44px;
+  }
+  .current-clue .label {
+    font-weight: 700; font-size: 12px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-soft); margin-right: 8px;
+  }
+
+  .grid-shell { display: flex; justify-content: center; }
+  .grid {
+    display: grid; gap: 0; background: var(--rule-strong);
+    border: 2px solid var(--rule-strong);
+    width: 100%; max-width: 560px;
+    touch-action: manipulation;
+  }
+  .cell {
+    position: relative; aspect-ratio: 1 / 1; background: var(--cell);
+    border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: center;
+    font: 600 clamp(13px, 3.6vw, 24px)/1 ui-sans-serif, system-ui, sans-serif;
+    text-transform: uppercase; cursor: pointer; user-select: none;
+    color: var(--ink);
+  }
+  .grid .cell:nth-child(n) { }
+  .cell.block { background: var(--block); border-color: var(--block); cursor: default; }
+  .cell.in-cross { background: var(--cell-cross); }
+  .cell.in-entry { background: var(--cell-entry); }
+  .cell.cursor { background: var(--cell-cursor); }
+  /* Focus is marked by an inset ring as well as colour, so the active square is
+     findable without relying on hue. */
+  .cell.cursor::before {
+    content: ""; position: absolute; inset: 0;
+    box-shadow: inset 0 0 0 3px var(--rule-strong);
+    pointer-events: none;
+  }
+  .cell .num {
+    position: absolute; top: 1px; left: 2px;
+    font: 500 clamp(7px, 1.7vw, 11px)/1 ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink-soft); pointer-events: none;
+  }
+  .cell.pencil { color: var(--pencil); font-style: italic; font-weight: 500; }
+  /* A wrong letter is struck through, not merely tinted — but the solver still
+     needs to read what they typed, so the mark is thin and sits behind it. */
+  .cell .letter { position: relative; z-index: 1; }
+  .cell.wrong::after {
+    content: ""; position: absolute; inset: 10%; z-index: 0;
+    background: linear-gradient(to top right, transparent calc(50% - 1px),
+                var(--wrong) calc(50% - 1px), var(--wrong) calc(50% + 1px),
+                transparent calc(50% + 1px));
+    pointer-events: none;
+  }
+  .cell.wrong { color: var(--wrong); }
+  .cell.revealed .num { color: var(--accent); }
+  .cell.revealed { text-decoration: underline; text-underline-offset: 2px; }
+
+  .clues { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  @media (min-width: 560px) and (max-width: 859px) {
+    .clues { grid-template-columns: 1fr 1fr; }
+  }
+  .clue-group h2 {
+    font: 600 12px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-soft);
+    margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+  }
+  ol.clue-list { list-style: none; margin: 0; padding: 0; }
+  ol.clue-list li {
+    display: flex; gap: 8px; padding: 5px 8px; border-radius: 7px;
+    cursor: pointer; font-size: 14px;
+  }
+  ol.clue-list li:hover { background: var(--cell-cross); }
+  ol.clue-list li.active { background: var(--cell-entry); }
+  ol.clue-list li.active .n { color: var(--ink); }
+  ol.clue-list li.done .t { color: var(--ink-faint); }
+  ol.clue-list li .n {
+    font-weight: 700; min-width: 22px; text-align: right; color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .enum { color: var(--ink-soft); white-space: nowrap; }
+
+  .banner {
+    margin-top: 14px; padding: 12px 14px; border-radius: var(--radius);
+    background: var(--accent); color: var(--accent-ink); font-weight: 600;
+  }
+  .keys {
+    margin-top: 22px; font-size: 12px; color: var(--ink-faint);
+    border-top: 1px solid var(--rule); padding-top: 10px;
+  }
+  .keys kbd {
+    font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px;
+    padding: 0 4px; color: var(--ink-soft);
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  #entry-proxy {
+    position: absolute; opacity: 0; pointer-events: none;
+    width: 1px; height: 1px; left: -9999px;
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1 id="title">Cryptic Crossword</h1>
+    <div class="byline" id="byline"></div>
+    <div class="spacer"></div>
+    <div class="toolbar">
+      <span class="timer" id="timer" title="Click to pause">0:00</span>
+      <button id="pencil-btn" aria-pressed="false" title="Pencil mode (P)">Pencil</button>
+      <div class="menu">
+        <button id="check-btn" aria-expanded="false">Check</button>
+        <div class="menu-items" id="check-menu" hidden>
+          <button data-scope="letter">Letter</button>
+          <button data-scope="entry">Entry</button>
+          <button data-scope="puzzle">Whole puzzle</button>
+        </div>
+      </div>
+      <div class="menu">
+        <button id="reveal-btn" aria-expanded="false">Reveal</button>
+        <div class="menu-items" id="reveal-menu" hidden>
+          <button data-scope="letter">Letter</button>
+          <button data-scope="entry">Entry</button>
+          <button data-scope="puzzle">Whole puzzle</button>
+        </div>
+      </div>
+      <button id="reset-btn" title="Clear everything and start again">Reset</button>
+    </div>
+  </header>
+
+  <div class="instructions" id="instructions" hidden></div>
+
+  <div class="board">
+    <div>
+      <div class="current-clue" id="current-clue" aria-live="polite">
+        <span class="label" id="current-label"></span><span id="current-text"></span>
+      </div>
+      <div class="grid-shell">
+        <div class="grid" id="grid" role="application" aria-label="Crossword grid"></div>
+      </div>
+      <div id="banner"></div>
+      <p class="keys">
+        <kbd>&larr;&uarr;&rarr;&darr;</kbd> move &nbsp;
+        <kbd>Space</kbd> switch direction &nbsp;
+        <kbd>Tab</kbd> next clue &nbsp;
+        <kbd>P</kbd> pencil &nbsp;
+        <kbd>Backspace</kbd> delete
+      </p>
+    </div>
+    <div class="clues">
+      <div class="clue-group">
+        <h2>Across</h2>
+        <ol class="clue-list" id="across-list"></ol>
+      </div>
+      <div class="clue-group">
+        <h2>Down</h2>
+        <ol class="clue-list" id="down-list"></ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input id="entry-proxy" autocapitalize="characters" autocomplete="off"
+       autocorrect="off" spellcheck="false" aria-hidden="true" tabindex="-1">
+
+<script id="puzzle-data" type="application/json">null</script>
+<script>
+(function () {
+  "use strict";
+
+  var DATA = null;
+  try {
+    DATA = JSON.parse(document.getElementById("puzzle-data").textContent);
+  } catch (e) { DATA = null; }
+
+  if (!DATA) {
+    document.getElementById("current-text").textContent =
+      "No puzzle loaded. Build one with scripts/build_ui.py.";
+    return;
+  }
+
+  // The solution is obfuscated, not encrypted: it keeps the answers out of a
+  // casual glance at the page source, and that is all it is meant to do.
+  function decodeSolution(payload) {
+    if (typeof payload !== "object" || !payload.b64) return payload;
+    var raw = atob(payload.b64), key = payload.key, out = "";
+    for (var i = 0; i < raw.length; i++) {
+      out += String.fromCharCode(raw.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return out;
+  }
+
+  var pattern = DATA.pattern;
+  var H = pattern.length, W = pattern[0].length;
+  var solution = decodeSolution(DATA.solution);   // row-major, "#" for blocks
+  var isLight = function (r, c) {
+    return r >= 0 && r < H && c >= 0 && c < W && pattern[r][c] === ".";
+  };
+  var idx = function (r, c) { return r * W + c; };
+
+  // Numbering, computed the same way the Python side computes it.
+  var numbers = {};          // "r,c" -> number
+  var slots = {};            // "n,dir" -> {n, dir, row, col, len, cells}
+  (function () {
+    var n = 0;
+    for (var r = 0; r < H; r++) {
+      for (var c = 0; c < W; c++) {
+        if (!isLight(r, c)) continue;
+        var across = !isLight(r, c - 1) && isLight(r, c + 1);
+        var down = !isLight(r - 1, c) && isLight(r + 1, c);
+        if (!across && !down) continue;
+        n += 1;
+        numbers[r + "," + c] = n;
+        if (across) {
+          var cells = [];
+          for (var cc = c; isLight(r, cc); cc++) cells.push([r, cc]);
+          slots[n + ",across"] = { n: n, dir: "across", row: r, col: c,
+                                   len: cells.length, cells: cells };
+        }
+        if (down) {
+          var dcells = [];
+          for (var rr = r; isLight(rr, c); rr++) dcells.push([rr, c]);
+          slots[n + ",down"] = { n: n, dir: "down", row: r, col: c,
+                                 len: dcells.length, cells: dcells };
+        }
+      }
+    }
+  })();
+
+  var entries = DATA.entries.map(function (e) {
+    var slot = slots[e.n + "," + e.dir];
+    return {
+      n: e.n, dir: e.dir, clue: e.clue, enumeration: e.enumeration,
+      slot: slot, key: e.n + "," + e.dir
+    };
+  }).filter(function (e) { return !!e.slot; });
+
+  var entryByKey = {};
+  entries.forEach(function (e) { entryByKey[e.key] = e; });
+
+  // Which entries pass through a square.
+  var atSquare = {};
+  entries.forEach(function (e) {
+    e.slot.cells.forEach(function (cell) {
+      var k = cell[0] + "," + cell[1];
+      (atSquare[k] = atSquare[k] || []).push(e);
+    });
+  });
+
+  var STORE_KEY = "vibe-cryptic:" + (DATA.id || DATA.meta.title);
+  var state = {
+    letters: new Array(H * W).fill(""),
+    pencil: new Array(H * W).fill(false),
+    revealed: new Array(H * W).fill(false),
+    wrong: new Array(H * W).fill(false),
+    cursor: null, dir: "across", pencilMode: false,
+    elapsed: 0, running: true, solved: false
+  };
+
+  function save() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        letters: state.letters, pencil: state.pencil,
+        revealed: state.revealed, elapsed: state.elapsed, solved: state.solved
+      }));
+    } catch (e) { /* private browsing, blocked storage — solving still works */ }
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (saved.letters && saved.letters.length === H * W) {
+        state.letters = saved.letters;
+        state.pencil = saved.pencil || state.pencil;
+        state.revealed = saved.revealed || state.revealed;
+        state.elapsed = saved.elapsed || 0;
+        state.solved = !!saved.solved;
+      }
+    } catch (e) { /* ignore a corrupt or unreadable entry */ }
+  }
+  load();
+
+  // ---------------------------------------------------------------- rendering
+  var gridEl = document.getElementById("grid");
+  gridEl.style.gridTemplateColumns = "repeat(" + W + ", minmax(0, 1fr))";
+  var cellEls = [];
+  for (var r = 0; r < H; r++) {
+    for (var c = 0; c < W; c++) {
+      var div = document.createElement("div");
+      div.className = "cell" + (isLight(r, c) ? "" : " block");
+      div.dataset.r = r; div.dataset.c = c;
+      if (isLight(r, c)) {
+        var num = numbers[r + "," + c];
+        if (num) {
+          var s = document.createElement("span");
+          s.className = "num"; s.textContent = num;
+          div.appendChild(s);
+        }
+        var letter = document.createElement("span");
+        letter.className = "letter";
+        div.appendChild(letter);
+      }
+      gridEl.appendChild(div);
+      cellEls.push(div);
+    }
+  }
+
+  function currentEntry() {
+    if (!state.cursor) return null;
+    var here = atSquare[state.cursor[0] + "," + state.cursor[1]] || [];
+    var match = here.filter(function (e) { return e.dir === state.dir; });
+    return match[0] || here[0] || null;
+  }
+  function crossingEntry() {
+    if (!state.cursor) return null;
+    var here = atSquare[state.cursor[0] + "," + state.cursor[1]] || [];
+    var other = here.filter(function (e) { return e.dir !== state.dir; });
+    return other[0] || null;
+  }
+
+  function render() {
+    var entry = currentEntry(), cross = crossingEntry();
+    var inEntry = {}, inCross = {};
+    if (entry) entry.slot.cells.forEach(function (x) { inEntry[x[0] + "," + x[1]] = 1; });
+    if (cross) cross.slot.cells.forEach(function (x) { inCross[x[0] + "," + x[1]] = 1; });
+
+    for (var i = 0; i < cellEls.length; i++) {
+      var el = cellEls[i];
+      if (el.classList.contains("block")) continue;
+      var rr = +el.dataset.r, cc = +el.dataset.c, k = rr + "," + cc;
+      el.classList.toggle("in-entry", !!inEntry[k]);
+      el.classList.toggle("in-cross", !inEntry[k] && !!inCross[k]);
+      el.classList.toggle("cursor",
+        !!state.cursor && state.cursor[0] === rr && state.cursor[1] === cc);
+      el.classList.toggle("pencil", !!state.pencil[i] && !state.revealed[i]);
+      el.classList.toggle("wrong", !!state.wrong[i]);
+      el.classList.toggle("revealed", !!state.revealed[i]);
+      el.querySelector(".letter").textContent = state.letters[i] || "";
+    }
+    renderClues(entry);
+    renderCurrentClue(entry);
+  }
+
+  function enumSuffix(e) { return e.enumeration ? " (" + e.enumeration + ")" : ""; }
+
+  function entryComplete(e) {
+    return e.slot.cells.every(function (cell) {
+      return !!state.letters[idx(cell[0], cell[1])];
+    });
+  }
+
+  var listEls = { across: document.getElementById("across-list"),
+                  down: document.getElementById("down-list") };
+  var clueEls = {};
+  ["across", "down"].forEach(function (dir) {
+    entries.filter(function (e) { return e.dir === dir; })
+      .sort(function (a, b) { return a.n - b.n; })
+      .forEach(function (e) {
+        var li = document.createElement("li");
+        li.innerHTML = '<span class="n"></span><span class="t"></span>';
+        li.querySelector(".n").textContent = e.n;
+        li.querySelector(".t").innerHTML = "";
+        li.querySelector(".t").appendChild(document.createTextNode(e.clue));
+        var en = document.createElement("span");
+        en.className = "enum"; en.textContent = enumSuffix(e);
+        li.querySelector(".t").appendChild(en);
+        li.addEventListener("click", function () {
+          state.dir = e.dir;
+          state.cursor = firstBlank(e) || [e.slot.row, e.slot.col];
+          focusProxy(); render();
+        });
+        listEls[dir].appendChild(li);
+        clueEls[e.key] = li;
+      });
+  });
+
+  function renderClues(active) {
+    entries.forEach(function (e) {
+      var li = clueEls[e.key];
+      if (!li) return;
+      li.classList.toggle("active", !!active && active.key === e.key);
+      li.classList.toggle("done", entryComplete(e));
+    });
+    if (active && clueEls[active.key]) {
+      var li = clueEls[active.key], box = li.getBoundingClientRect();
+      if (box.top < 0 || box.bottom > window.innerHeight) {
+        li.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }
+
+  function renderCurrentClue(entry) {
+    var label = document.getElementById("current-label");
+    var text = document.getElementById("current-text");
+    if (!entry) { label.textContent = ""; text.textContent = "Pick a square to start."; return; }
+    label.textContent = entry.n + (entry.dir === "across" ? " Across" : " Down");
+    text.textContent = entry.clue + enumSuffix(entry);
+  }
+
+  function firstBlank(e) {
+    for (var i = 0; i < e.slot.cells.length; i++) {
+      var cell = e.slot.cells[i];
+      if (!state.letters[idx(cell[0], cell[1])]) return [cell[0], cell[1]];
+    }
+    return null;
+  }
+
+  // -------------------------------------------------------------- interaction
+  var proxy = document.getElementById("entry-proxy");
+  function focusProxy() {
+    // A hidden input keeps mobile keyboards up without a visible caret.
+    try { proxy.focus({ preventScroll: true }); } catch (e) { proxy.focus(); }
+  }
+
+  gridEl.addEventListener("mousedown", function (ev) {
+    var el = ev.target.closest(".cell");
+    if (!el || el.classList.contains("block")) return;
+    ev.preventDefault();
+    var r = +el.dataset.r, c = +el.dataset.c;
+    if (state.cursor && state.cursor[0] === r && state.cursor[1] === c) {
+      toggleDirection();
+    } else {
+      state.cursor = [r, c];
+      var here = atSquare[r + "," + c] || [];
+      if (!here.some(function (e) { return e.dir === state.dir; }) && here.length) {
+        state.dir = here[0].dir;
+      }
+    }
+    focusProxy(); render();
+  });
+
+  function toggleDirection() {
+    var here = atSquare[state.cursor[0] + "," + state.cursor[1]] || [];
+    var other = state.dir === "across" ? "down" : "across";
+    if (here.some(function (e) { return e.dir === other; })) state.dir = other;
+  }
+
+  function step(dr, dc) {
+    if (!state.cursor) return;
+    var r = state.cursor[0] + dr, c = state.cursor[1] + dc;
+    while (r >= 0 && r < H && c >= 0 && c < W) {
+      if (isLight(r, c)) { state.cursor = [r, c]; return true; }
+      r += dr; c += dc;
+    }
+    return false;
+  }
+
+  function advance() {
+    var entry = currentEntry();
+    if (!entry) return;
+    var cells = entry.slot.cells;
+    var pos = cells.findIndex(function (x) {
+      return x[0] === state.cursor[0] && x[1] === state.cursor[1];
+    });
+    if (pos >= 0 && pos < cells.length - 1) {
+      state.cursor = [cells[pos + 1][0], cells[pos + 1][1]];
+    }
+  }
+
+  function retreat() {
+    var entry = currentEntry();
+    if (!entry) return;
+    var cells = entry.slot.cells;
+    var pos = cells.findIndex(function (x) {
+      return x[0] === state.cursor[0] && x[1] === state.cursor[1];
+    });
+    if (pos > 0) state.cursor = [cells[pos - 1][0], cells[pos - 1][1]];
+  }
+
+  function gotoEntry(delta) {
+    var ordered = entries.slice().sort(function (a, b) {
+      return a.dir === b.dir ? a.n - b.n : (a.dir === "across" ? -1 : 1);
+    });
+    var entry = currentEntry();
+    var at = entry ? ordered.findIndex(function (e) { return e.key === entry.key; }) : -1;
+    var next = ordered[(at + delta + ordered.length) % ordered.length];
+    if (!next) return;
+    state.dir = next.dir;
+    state.cursor = firstBlank(next) || [next.slot.row, next.slot.col];
+  }
+
+  function setLetter(ch) {
+    if (!state.cursor) return;
+    var i = idx(state.cursor[0], state.cursor[1]);
+    if (state.revealed[i]) { advance(); return; }
+    state.letters[i] = ch;
+    state.pencil[i] = state.pencilMode;
+    state.wrong[i] = false;
+    advance();
+    checkSolved();
+    save();
+  }
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    var key = ev.key;
+    if (key === "Tab") {
+      ev.preventDefault(); gotoEntry(ev.shiftKey ? -1 : 1); focusProxy(); render(); return;
+    }
+    if (!state.cursor && /^[a-zA-Z]$/.test(key)) {
+      var first = entries[0];
+      if (first) { state.dir = first.dir; state.cursor = [first.slot.row, first.slot.col]; }
+    }
+    if (key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
+      ev.preventDefault();
+      var wantDir = (key === "ArrowLeft" || key === "ArrowRight") ? "across" : "down";
+      if (state.dir !== wantDir) {
+        var here = atSquare[state.cursor[0] + "," + state.cursor[1]] || [];
+        if (here.some(function (e) { return e.dir === wantDir; })) {
+          state.dir = wantDir; render(); return;
+        }
+      }
+      step(key === "ArrowUp" ? -1 : key === "ArrowDown" ? 1 : 0,
+           key === "ArrowLeft" ? -1 : key === "ArrowRight" ? 1 : 0);
+      render(); return;
+    }
+    if (key === " ") { ev.preventDefault(); toggleDirection(); render(); return; }
+    if (key === "Backspace") {
+      ev.preventDefault();
+      if (!state.cursor) return;
+      var i = idx(state.cursor[0], state.cursor[1]);
+      if (state.letters[i] && !state.revealed[i]) {
+        state.letters[i] = ""; state.wrong[i] = false;
+      } else {
+        retreat();
+        var j = idx(state.cursor[0], state.cursor[1]);
+        if (!state.revealed[j]) { state.letters[j] = ""; state.wrong[j] = false; }
+      }
+      save(); render(); return;
+    }
+    if (key === "Delete") {
+      ev.preventDefault();
+      var d = idx(state.cursor[0], state.cursor[1]);
+      if (!state.revealed[d]) { state.letters[d] = ""; state.wrong[d] = false; save(); render(); }
+      return;
+    }
+    if (/^[a-zA-Z]$/.test(key)) {
+      ev.preventDefault();
+      setLetter(key.toUpperCase());
+      render(); return;
+    }
+    if (key === "p" || key === "P") { togglePencil(); return; }
+  });
+
+  // Mobile keyboards fire input events rather than useful keydowns.
+  proxy.addEventListener("input", function () {
+    var value = proxy.value.replace(/[^a-zA-Z]/g, "");
+    proxy.value = "";
+    for (var i = 0; i < value.length; i++) setLetter(value[i].toUpperCase());
+    if (value) render();
+  });
+
+  // ------------------------------------------------------------ check/reveal
+  function solutionAt(i) { return solution[i]; }
+
+  function scopeCells(scope) {
+    if (scope === "puzzle") {
+      var all = [];
+      for (var i = 0; i < H * W; i++) {
+        var r = Math.floor(i / W), c = i % W;
+        if (isLight(r, c)) all.push(i);
+      }
+      return all;
+    }
+    if (scope === "entry") {
+      var e = currentEntry();
+      return e ? e.slot.cells.map(function (x) { return idx(x[0], x[1]); }) : [];
+    }
+    return state.cursor ? [idx(state.cursor[0], state.cursor[1])] : [];
+  }
+
+  function doCheck(scope) {
+    scopeCells(scope).forEach(function (i) {
+      state.wrong[i] = !!state.letters[i] && state.letters[i] !== solutionAt(i);
+    });
+    render();
+  }
+
+  function doReveal(scope) {
+    scopeCells(scope).forEach(function (i) {
+      if (state.letters[i] !== solutionAt(i)) {
+        state.letters[i] = solutionAt(i);
+        state.revealed[i] = true;
+        state.pencil[i] = false;
+      }
+      state.wrong[i] = false;
+    });
+    checkSolved(); save(); render();
+  }
+
+  function checkSolved() {
+    for (var i = 0; i < H * W; i++) {
+      var r = Math.floor(i / W), c = i % W;
+      if (!isLight(r, c)) continue;
+      if (state.letters[i] !== solutionAt(i)) return false;
+    }
+    if (!state.solved) {
+      state.solved = true; state.running = false;
+      var used = Array.prototype.some.call(state.revealed, Boolean);
+      document.getElementById("banner").innerHTML =
+        '<div class="banner">' +
+        (used ? "Finished, with a little help." : "Solved! " + formatTime(state.elapsed)) +
+        "</div>";
+      save();
+    }
+    return true;
+  }
+
+  function wireMenu(btnId, menuId, handler) {
+    var btn = document.getElementById(btnId), menu = document.getElementById(menuId);
+    btn.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      var open = !menu.hidden;
+      closeMenus();
+      menu.hidden = open;
+      btn.setAttribute("aria-expanded", String(!open));
+    });
+    menu.addEventListener("click", function (ev) {
+      var target = ev.target.closest("button[data-scope]");
+      if (!target) return;
+      handler(target.dataset.scope);
+      closeMenus();
+    });
+  }
+  function closeMenus() {
+    ["check-menu", "reveal-menu"].forEach(function (id) {
+      document.getElementById(id).hidden = true;
+    });
+    ["check-btn", "reveal-btn"].forEach(function (id) {
+      document.getElementById(id).setAttribute("aria-expanded", "false");
+    });
+  }
+  document.addEventListener("click", closeMenus);
+  wireMenu("check-btn", "check-menu", doCheck);
+  wireMenu("reveal-btn", "reveal-menu", doReveal);
+
+  function togglePencil() {
+    state.pencilMode = !state.pencilMode;
+    document.getElementById("pencil-btn")
+      .setAttribute("aria-pressed", String(state.pencilMode));
+  }
+  document.getElementById("pencil-btn").addEventListener("click", function () {
+    togglePencil(); focusProxy();
+  });
+
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    if (!window.confirm("Clear the whole grid and start again?")) return;
+    state.letters = new Array(H * W).fill("");
+    state.pencil = new Array(H * W).fill(false);
+    state.revealed = new Array(H * W).fill(false);
+    state.wrong = new Array(H * W).fill(false);
+    state.elapsed = 0; state.solved = false; state.running = true;
+    document.getElementById("banner").innerHTML = "";
+    save(); render();
+  });
+
+  // ------------------------------------------------------------------- timer
+  function formatTime(sec) {
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  var timerEl = document.getElementById("timer");
+  timerEl.addEventListener("click", function () {
+    state.running = !state.running && !state.solved;
+    timerEl.style.opacity = state.running ? "1" : ".5";
+  });
+  setInterval(function () {
+    if (state.running && !state.solved) {
+      state.elapsed += 1;
+      if (state.elapsed % 10 === 0) save();
+    }
+    timerEl.textContent = formatTime(state.elapsed);
+  }, 1000);
+
+  // ------------------------------------------------------------------- setup
+  document.getElementById("title").textContent = DATA.meta.title || "Cryptic Crossword";
+  var bits = [];
+  if (DATA.meta.setter) bits.push("Set by " + DATA.meta.setter);
+  if (DATA.meta.date) bits.push(DATA.meta.date);
+  if (DATA.meta.difficulty) bits.push(DATA.meta.difficulty);
+  document.getElementById("byline").textContent = bits.join(" · ");
+  if (DATA.meta.instructions) {
+    var box = document.getElementById("instructions");
+    box.textContent = DATA.meta.instructions;
+    box.hidden = false;
+  }
+  document.title = (DATA.meta.title || "Cryptic Crossword") + " — cryptic crossword";
+
+  if (entries.length) {
+    var first = entries.slice().sort(function (a, b) { return a.n - b.n; })[0];
+    state.dir = first.dir;
+    state.cursor = [first.slot.row, first.slot.col];
+  }
+  timerEl.textContent = formatTime(state.elapsed);
+  if (state.solved) { state.running = false; checkSolved(); }
+  render();
+})();
+</script>
+<!-- ARTIFACT-BODY-END -->
+</body>
+</html>

@@ -1,0 +1,967 @@
+{
+  "schema_version": "0.1",
+  "meta": {
+    "title": "First Light",
+    "setter": "vibe-cryptic (hand-set)",
+    "date": "2026-08-30",
+    "difficulty": "standard",
+    "tradition": "us-cryptic",
+    "notes": "The calibration fixture: a complete hand-set cryptic in the Harper's tradition. Every device the taxonomy names is represented at least once, and the structured wordplay is populated throughout so the checkers have something to check."
+  },
+  "grid": {
+    "pattern": [
+      "...#.......",
+      ".#.#.#.#.#.",
+      ".......#...",
+      ".###.###.#.",
+      ".....#.....",
+      "##.#.#.#.##",
+      ".....#.....",
+      ".#.###.###.",
+      "...#.......",
+      ".#.#.#.#.#.",
+      ".......#..."
+    ],
+    "symmetry": "rotational-180"
+  },
+  "entries": [
+    {
+      "number": 1,
+      "direction": "across",
+      "row": 0,
+      "col": 0,
+      "answer": "AXE",
+      "enumeration": "3",
+      "clue": {
+        "text": "Sack some of the tax expenditure",
+        "definition": {
+          "text": "Sack",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "hidden"
+          ],
+          "derivation": "AXE is concealed in 'the tAX Expenditure'.",
+          "indicators": [
+            "some of"
+          ],
+          "checks": [
+            {
+              "kind": "hidden",
+              "source": "the tax expenditure",
+              "yields": "AXE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 3,
+      "direction": "across",
+      "row": 0,
+      "col": 4,
+      "answer": "ACROBAT",
+      "enumeration": "7",
+      "clue": {
+        "text": "Tumbler upset cab rota",
+        "definition": {
+          "text": "Tumbler",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('upset') of CAB ROTA gives ACROBAT.",
+          "indicators": [
+            "upset"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "cab rota",
+              "yields": "ACROBAT"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 7,
+      "direction": "across",
+      "row": 2,
+      "col": 0,
+      "answer": "TRAILED",
+      "enumeration": "7",
+      "clue": {
+        "text": "Model who protested followed",
+        "definition": {
+          "text": "followed",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "T (Model T) + RAILED (protested) = TRAILED.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Model",
+              "yields": "T"
+            },
+            {
+              "kind": "literal",
+              "source": "protested",
+              "yields": "RAILED"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "T",
+                "RAILED"
+              ],
+              "yields": "TRAILED"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 8,
+      "direction": "across",
+      "row": 2,
+      "col": 8,
+      "answer": "LOT",
+      "enumeration": "3",
+      "clue": {
+        "text": "Plenty of land for sale",
+        "definition": {
+          "text": "Plenty",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "double_definition"
+          ],
+          "derivation": "Double definition: LOT as plenty, and LOT as a parcel of land for sale."
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 9,
+      "direction": "across",
+      "row": 4,
+      "col": 0,
+      "answer": "CIGAR",
+      "enumeration": "5",
+      "clue": {
+        "text": "Craig rolled a smoke",
+        "definition": {
+          "text": "smoke",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('rolled') of CRAIG gives CIGAR, with 'rolled' doing honest double duty on the surface.",
+          "indicators": [
+            "rolled"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Craig",
+              "yields": "CIGAR"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 11,
+      "direction": "across",
+      "row": 4,
+      "col": 6,
+      "answer": "ATOLL",
+      "enumeration": "5",
+      "clue": {
+        "text": "A charge for the island",
+        "definition": {
+          "text": "island",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "A + TOLL (charge) = ATOLL.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "A",
+              "yields": "A"
+            },
+            {
+              "kind": "literal",
+              "source": "charge",
+              "yields": "TOLL"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "A",
+                "TOLL"
+              ],
+              "yields": "ATOLL"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 12,
+      "direction": "across",
+      "row": 6,
+      "col": 0,
+      "answer": "APRON",
+      "enumeration": "5",
+      "clue": {
+        "text": "Cover found in cheap Ronaldo merchandise",
+        "definition": {
+          "text": "Cover",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "hidden"
+          ],
+          "derivation": "APRON is concealed in 'cheAP RONaldo'.",
+          "indicators": [
+            "found in"
+          ],
+          "checks": [
+            {
+              "kind": "hidden",
+              "source": "cheap Ronaldo",
+              "yields": "APRON"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 13,
+      "direction": "across",
+      "row": 6,
+      "col": 6,
+      "answer": "BANJO",
+      "enumeration": "5",
+      "clue": {
+        "text": "Strings involved in a suburban job",
+        "definition": {
+          "text": "Strings",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "hidden"
+          ],
+          "derivation": "BANJO is concealed in 'subur BAN JOb'.",
+          "indicators": [
+            "involved in"
+          ],
+          "checks": [
+            {
+              "kind": "hidden",
+              "source": "a suburban job",
+              "yields": "BANJO"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 15,
+      "direction": "across",
+      "row": 8,
+      "col": 0,
+      "answer": "LEA",
+      "enumeration": "3",
+      "clue": {
+        "text": "Endless lead for the meadow",
+        "definition": {
+          "text": "meadow",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "deletion"
+          ],
+          "derivation": "LEAD without its last letter ('endless') gives LEA.",
+          "indicators": [
+            "Endless"
+          ],
+          "checks": [
+            {
+              "kind": "deletion",
+              "source": "lead",
+              "remove": "D",
+              "yields": "LEA"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 16,
+      "direction": "across",
+      "row": 8,
+      "col": 4,
+      "answer": "MATINEE",
+      "enumeration": "7",
+      "clue": {
+        "text": "Main tee redesigned for the afternoon show",
+        "definition": {
+          "text": "afternoon show",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('redesigned') of MAIN TEE gives MATINEE.",
+          "indicators": [
+            "redesigned"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Main tee",
+              "yields": "MATINEE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 18,
+      "direction": "across",
+      "row": 10,
+      "col": 0,
+      "answer": "SIDECAR",
+      "enumeration": "7",
+      "clue": {
+        "text": "Team vehicle makes a cocktail",
+        "definition": {
+          "text": "cocktail",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "SIDE (team) + CAR (vehicle) = SIDECAR, the cocktail.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Team",
+              "yields": "SIDE"
+            },
+            {
+              "kind": "literal",
+              "source": "vehicle",
+              "yields": "CAR"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "SIDE",
+                "CAR"
+              ],
+              "yields": "SIDECAR"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 19,
+      "direction": "across",
+      "row": 10,
+      "col": 8,
+      "answer": "TIN",
+      "enumeration": "3",
+      "clue": {
+        "text": "Louse sent back to the can",
+        "definition": {
+          "text": "can",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "reversal"
+          ],
+          "derivation": "NIT (louse) reversed ('sent back') gives TIN.",
+          "indicators": [
+            "sent back"
+          ],
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Louse",
+              "yields": "NIT"
+            },
+            {
+              "kind": "reversal",
+              "source": "NIT",
+              "yields": "TIN"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 1,
+      "direction": "down",
+      "row": 0,
+      "col": 0,
+      "answer": "ATTIC",
+      "enumeration": "5",
+      "clue": {
+        "text": "Space upstairs after tacit conversion",
+        "definition": {
+          "text": "Space upstairs",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('conversion') of TACIT gives ATTIC.",
+          "indicators": [
+            "conversion"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "tacit",
+              "yields": "ATTIC"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 2,
+      "direction": "down",
+      "row": 0,
+      "col": 2,
+      "answer": "ERA",
+      "enumeration": "3",
+      "clue": {
+        "text": "Ear reconstructed over time",
+        "definition": {
+          "text": "time",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('reconstructed') of EAR gives ERA.",
+          "indicators": [
+            "reconstructed"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Ear",
+              "yields": "ERA"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 3,
+      "direction": "down",
+      "row": 0,
+      "col": 4,
+      "answer": "AILERON",
+      "enumeration": "7",
+      "clue": {
+        "text": "One liar fabricated part of a wing",
+        "definition": {
+          "text": "part of a wing",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('fabricated') of ONE LIAR gives AILERON; the indicator sits naturally with the liar.",
+          "indicators": [
+            "fabricated"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "One liar",
+              "yields": "AILERON"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 4,
+      "direction": "down",
+      "row": 0,
+      "col": 6,
+      "answer": "ROD",
+      "enumeration": "3",
+      "clue": {
+        "text": "Leaders of resistance opposing dictatorship carry a stick",
+        "definition": {
+          "text": "stick",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "letter_selection"
+          ],
+          "derivation": "Initial letters ('leaders of') of Resistance Opposing Dictatorship give ROD.",
+          "indicators": [
+            "Leaders of"
+          ],
+          "checks": [
+            {
+              "kind": "letter_selection",
+              "source": "resistance opposing dictatorship",
+              "rule": "initials",
+              "yields": "ROD"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 5,
+      "direction": "down",
+      "row": 0,
+      "col": 8,
+      "answer": "BALLOON",
+      "enumeration": "7",
+      "clue": {
+        "text": "Dance with nothing on, and swell",
+        "definition": {
+          "text": "swell",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "BALL (dance) + O (nothing) + ON = BALLOON, meaning to swell.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Dance",
+              "yields": "BALL"
+            },
+            {
+              "kind": "literal",
+              "source": "nothing",
+              "yields": "O"
+            },
+            {
+              "kind": "literal",
+              "source": "on",
+              "yields": "ON"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "BALL",
+                "O",
+                "ON"
+              ],
+              "yields": "BALLOON"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 6,
+      "direction": "down",
+      "row": 0,
+      "col": 10,
+      "answer": "TOTAL",
+      "enumeration": "5",
+      "clue": {
+        "text": "Child and Al add up to the sum",
+        "definition": {
+          "text": "sum",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "TOT (child) + AL = TOTAL.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Child",
+              "yields": "TOT"
+            },
+            {
+              "kind": "literal",
+              "source": "Al",
+              "yields": "AL"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "TOT",
+                "AL"
+              ],
+              "yields": "TOTAL"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 10,
+      "direction": "down",
+      "row": 4,
+      "col": 2,
+      "answer": "GARLAND",
+      "enumeration": "7",
+      "clue": {
+        "text": "Fish and land combine in a wreath",
+        "definition": {
+          "text": "wreath",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "GAR (fish) + LAND = GARLAND.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Fish",
+              "yields": "GAR"
+            },
+            {
+              "kind": "literal",
+              "source": "land",
+              "yields": "LAND"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "GAR",
+                "LAND"
+              ],
+              "yields": "GARLAND"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 11,
+      "direction": "down",
+      "row": 4,
+      "col": 6,
+      "answer": "ARBITER",
+      "enumeration": "7",
+      "clue": {
+        "text": "A king, with a nipper, becomes the judge",
+        "definition": {
+          "text": "judge",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "A + R (king, Rex) + BITER (nipper) = ARBITER.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "A",
+              "yields": "A"
+            },
+            {
+              "kind": "literal",
+              "source": "king",
+              "yields": "R"
+            },
+            {
+              "kind": "literal",
+              "source": "nipper",
+              "yields": "BITER"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "A",
+                "R",
+                "BITER"
+              ],
+              "yields": "ARBITER"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 12,
+      "direction": "down",
+      "row": 6,
+      "col": 0,
+      "answer": "ATLAS",
+      "enumeration": "5",
+      "clue": {
+        "text": "Sadly, time is included in the book of maps",
+        "definition": {
+          "text": "book of maps",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "container"
+          ],
+          "derivation": "ALAS (sadly) around T (time) gives A-T-LAS = ATLAS.",
+          "indicators": [
+            "is included in"
+          ],
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Sadly",
+              "yields": "ALAS"
+            },
+            {
+              "kind": "literal",
+              "source": "time",
+              "yields": "T"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "A",
+                "T",
+                "LAS"
+              ],
+              "yields": "ATLAS"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 14,
+      "direction": "down",
+      "row": 6,
+      "col": 10,
+      "answer": "OCEAN",
+      "enumeration": "5",
+      "clue": {
+        "text": "Canoe wrecked in the sea",
+        "definition": {
+          "text": "sea",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('wrecked') of CANOE gives OCEAN.",
+          "indicators": [
+            "wrecked"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Canoe",
+              "yields": "OCEAN"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 16,
+      "direction": "down",
+      "row": 8,
+      "col": 4,
+      "answer": "MAC",
+      "enumeration": "3",
+      "clue": {
+        "text": "Engine part raised for a raincoat",
+        "definition": {
+          "text": "raincoat",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "reversal"
+          ],
+          "derivation": "CAM (engine part) reversed ('raised', a down entry) gives MAC.",
+          "indicators": [
+            "raised"
+          ],
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Engine part",
+              "yields": "CAM"
+            },
+            {
+              "kind": "reversal",
+              "source": "CAM",
+              "yields": "MAC"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 17,
+      "direction": "down",
+      "row": 8,
+      "col": 8,
+      "answer": "NET",
+      "enumeration": "3",
+      "clue": {
+        "text": "Ten overturned for the catch",
+        "definition": {
+          "text": "catch",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "reversal"
+          ],
+          "derivation": "TEN reversed ('overturned') gives NET.",
+          "indicators": [
+            "overturned"
+          ],
+          "checks": [
+            {
+              "kind": "reversal",
+              "source": "Ten",
+              "yields": "NET"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    }
+  ]
+}
