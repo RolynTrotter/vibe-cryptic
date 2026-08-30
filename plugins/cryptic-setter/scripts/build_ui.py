@@ -38,9 +38,12 @@ def obfuscate(text, key=OBFUSCATION_KEY):
 
 
 def solution_string(pz):
-    """The filled grid, row-major, with '#' for blocks."""
+    """The filled grid, row-major, with '#' for blocks.
+
+    A barred grid has no blocks, so every square gets a letter.
+    """
     cells = [
-        ["#" if pz.pattern[r][c] == puzzle_mod.BLOCK else " " for c in range(pz.width)]
+        [" " if pz.is_light(r, c) else "#" for c in range(pz.width)]
         for r in range(pz.height)
     ]
     for entry in pz.doc["entries"]:
@@ -75,13 +78,18 @@ def build_payload(pz):
         k: v for k, v in doc["meta"].items()
         if k in ("title", "setter", "date", "difficulty", "instructions")
     }
-    return {
+    payload = {
         "id": puzzle_id(doc),
         "meta": meta,
-        "pattern": pz.pattern,
+        "style": pz.style,
         "entries": entries,
         "solution": obfuscate(solution_string(pz)),
     }
+    if pz.style == "barred":
+        payload["bars"] = doc["grid"]["bars"]
+    else:
+        payload["pattern"] = pz.pattern
+    return payload
 
 
 def render(payload, artifact_body=False):

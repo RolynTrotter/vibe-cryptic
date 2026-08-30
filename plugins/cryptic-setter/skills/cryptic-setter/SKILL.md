@@ -18,20 +18,37 @@ All commands assume `$ROOT` is `${CLAUDE_PLUGIN_ROOT}`.
 Ask only what you cannot sensibly default. Defaults: 11x11, standard difficulty,
 no theme, today's date. Then pick a grid.
 
-`$ROOT/fixtures/first-light-good.json` carries a validated 11x11 pattern you can
-reuse outright.
+Two validated grids ship with the skill and can be reused outright:
+`$ROOT/fixtures/behind-bars-good.json` (barred, 5x7) and
+`$ROOT/fixtures/first-light-good.json` (blocked, 11x11).
 
-Two grid styles exist. **Barred** grids — what Harper's itself publishes — have
-no black squares: entries are separated by bars on cell edges and every letter
-is checked. They are not supported yet (issue #18). **Blocked** grids, where
-black squares separate entries and about half the letters are checked, are what
-the tooling handles today, and their conventions are:
+Pick a style with `grid.style`. **Barred** — what Harper's publishes — has no
+black squares; entries are separated by bars on cell edges, written as two
+full-size arrays where `|` marks a bar on a cell's right edge and `-` a bar
+beneath it:
 
-- 180-degree rotational symmetry.
-- Every entry at least 3 letters, and every light belongs to some entry.
-- Roughly half the letters checked (crossed by a second entry).
+```json
+"grid": { "style": "barred", "bars": {
+    "right": ["..|....", "...|...", ".......", "..|....", "...|..."],
+    "below": [".-.....", ".......", ".......", ".....-.", "......."] } }
+```
+
+**Blocked** separates entries with black squares, written as a pattern of `#`
+and `.`. Barred grids are more heavily checked, so they are harder to fill and
+give the solver more help.
+
+The same conventions govern both, since they concern unchecked letters rather
+than blocks:
+
+- 180-degree rotational symmetry of whatever separates the entries.
+- Every entry at least 3 letters, and every square belonging to some entry.
 - **Never two consecutive unchecked letters** in an entry.
 - The first and last letter of every entry is checked.
+
+In a barred grid a square goes unchecked when a bar cuts its run in one
+direction down to a single letter — that square then belongs only to the entry
+running the other way. It is the same fairness question as a blocked grid's
+unches, so the same rules apply.
 
 The lattice that satisfies these cheaply (blocked style): block every
 odd-row/odd-column square,

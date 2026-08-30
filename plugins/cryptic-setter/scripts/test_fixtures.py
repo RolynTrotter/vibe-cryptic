@@ -16,10 +16,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
+import puzzle as puzzle_mod
 from validate import SCHEMA_PATH, validate_file
 
 GOOD = os.path.join(ROOT, "fixtures", "first-light-good.json")
 BAD = os.path.join(ROOT, "fixtures", "first-light-bad.json")
+BARRED = os.path.join(ROOT, "fixtures", "behind-bars-good.json")
 
 # (defect number, entry label, a distinctive fragment of the expected message)
 EXPECTED = [
@@ -37,17 +39,74 @@ EXPECTED = [
 ]
 
 
+def barred_doc(bars_right, bars_below, size=5, symmetry="none"):
+    """A minimal barred grid, for exercising the geometry checks directly."""
+    rows = [
+        "".join("|" if (r, c) in bars_right else "." for c in range(size))
+        for r in range(size)
+    ]
+    cols = [
+        "".join("-" if (r, c) in bars_below else "." for c in range(size))
+        for r in range(size)
+    ]
+    return {
+        "schema_version": "0.1",
+        "meta": {"title": "grid check", "setter": "test"},
+        "grid": {"style": "barred", "symmetry": symmetry,
+                 "bars": {"right": rows, "below": cols}},
+        "entries": [],
+    }
+
+
+# Geometry defects a barred grid can have, and the message each must produce.
+# These are checked in memory rather than as fixture files because they are
+# about the grid alone, with no entries or clues involved.
+BARRED_CASES = [
+    ("a bar with no symmetric partner",
+     barred_doc({(0, 1)}, set(), symmetry="rotational-180"),
+     "symmetric partner"),
+    ("a square walled off from every entry",
+     barred_doc({(0, 0)}, {(0, 0)}),
+     "belongs to no entry"),
+    ("an entry below the minimum length",
+     barred_doc({(0, 1)}, set()),
+     "letters (minimum 3)"),
+    ("an entry starting on an unchecked square",
+     barred_doc(set(), {(0, 0)}),
+     "unchecked first letter"),
+]
+
+
+def check_barred_geometry():
+    failures = []
+    for label, doc, fragment in BARRED_CASES:
+        pz = puzzle_mod.Puzzle(doc=doc)
+        if not puzzle_mod.grid_shape_errors(pz):
+            pz.slots = puzzle_mod.enumerate_slots(pz)
+            pz.checked = puzzle_mod.compute_checked(pz.slots)
+        errors = puzzle_mod.check_grid(pz)
+        if not any(fragment in e for e in errors):
+            failures.append(
+                f"barred grid check missed {label}: no error containing "
+                f"{fragment!r} (got {errors})"
+            )
+    return failures
+
+
 def main():
     with open(SCHEMA_PATH) as fh:
         schema = json.load(fh)
     failures = []
 
-    good_errors = validate_file(GOOD, schema)
-    if good_errors:
-        failures.append(
-            f"the good fixture should validate clean, but got {len(good_errors)} "
-            f"error(s):\n    " + "\n    ".join(good_errors)
-        )
+    for path, label in ((GOOD, "blocked"), (BARRED, "barred")):
+        errors = validate_file(path, schema)
+        if errors:
+            failures.append(
+                f"the {label} fixture should validate clean, but got "
+                f"{len(errors)} error(s):\n    " + "\n    ".join(errors)
+            )
+
+    failures += check_barred_geometry()
 
     bad_errors = validate_file(BAD, schema)
     if not bad_errors:
@@ -76,8 +135,10 @@ def main():
         for failure in failures:
             print(f"FAIL: {failure}")
         return 1
-    print(f"ok: good fixture clean; all {len(EXPECTED)} planted defects caught")
-    print(f"    ({len(bad_errors)} errors reported on the bad fixture)")
+    print(f"ok: both good fixtures clean; all {len(EXPECTED)} planted clue "
+          f"defects caught")
+    print(f"    ({len(bad_errors)} errors reported on the bad fixture; "
+          f"{len(BARRED_CASES)} barred grid defects caught)")
     return 0
 
 

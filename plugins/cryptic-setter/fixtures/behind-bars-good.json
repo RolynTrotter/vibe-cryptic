@@ -1,0 +1,639 @@
+{
+  "schema_version": "0.1",
+  "meta": {
+    "title": "Behind Bars",
+    "setter": "vibe-cryptic (hand-set)",
+    "date": "2026-08-30",
+    "difficulty": "gentle",
+    "tradition": "us-cryptic",
+    "notes": "The barred-grid calibration fixture, in the style Harper's publishes: no black squares, entries separated by bars on cell edges. Two squares are unchecked, at (0,1) and (4,5), where a bar cuts the down run to a single letter \u2014 barred grids are more heavily checked than blocked ones but not free of unches, so the same checking conventions apply."
+  },
+  "grid": {
+    "style": "barred",
+    "symmetry": "rotational-180",
+    "bars": {
+      "right": [
+        "..|....",
+        "...|...",
+        ".......",
+        "..|....",
+        "...|..."
+      ],
+      "below": [
+        ".-.....",
+        ".......",
+        ".......",
+        ".....-.",
+        "......."
+      ]
+    }
+  },
+  "entries": [
+    {
+      "number": 1,
+      "direction": "across",
+      "row": 0,
+      "col": 0,
+      "answer": "FIG",
+      "enumeration": "3",
+      "clue": {
+        "text": "Animated image turned back to fruit",
+        "definition": {
+          "text": "fruit",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "reversal"
+          ],
+          "derivation": "GIF (animated image) reversed ('turned back') gives FIG.",
+          "indicators": [
+            "turned back"
+          ],
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Animated image",
+              "yields": "GIF"
+            },
+            {
+              "kind": "reversal",
+              "source": "GIF",
+              "yields": "FIG"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 3,
+      "direction": "across",
+      "row": 0,
+      "col": 3,
+      "answer": "FORT",
+      "enumeration": "4",
+      "clue": {
+        "text": "Stronghold offering a bit of comfort",
+        "definition": {
+          "text": "Stronghold",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "hidden"
+          ],
+          "derivation": "FORT is concealed in 'com FORT'.",
+          "indicators": [
+            "a bit of"
+          ],
+          "checks": [
+            {
+              "kind": "hidden",
+              "source": "comfort",
+              "yields": "FORT"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 7,
+      "direction": "across",
+      "row": 1,
+      "col": 0,
+      "answer": "ORAL",
+      "enumeration": "4",
+      "clue": {
+        "text": "By word of mouth, this is an exam",
+        "definition": {
+          "text": "an exam",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "double_definition"
+          ],
+          "derivation": "Double definition: ORAL as by word of mouth, and an oral as a spoken exam."
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 9,
+      "direction": "across",
+      "row": 1,
+      "col": 4,
+      "answer": "WAR",
+      "enumeration": "3",
+      "clue": {
+        "text": "Raw, sent back into conflict",
+        "definition": {
+          "text": "conflict",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "reversal"
+          ],
+          "derivation": "RAW reversed ('sent back') gives WAR.",
+          "indicators": [
+            "sent back"
+          ],
+          "checks": [
+            {
+              "kind": "reversal",
+              "source": "Raw",
+              "yields": "WAR"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 10,
+      "direction": "across",
+      "row": 2,
+      "col": 0,
+      "answer": "ROMANCE",
+      "enumeration": "7",
+      "clue": {
+        "text": "Ancient Italian church offers a love story",
+        "definition": {
+          "text": "love story",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "ROMAN (ancient Italian) + CE (Church of England) = ROMANCE.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Ancient Italian",
+              "yields": "ROMAN"
+            },
+            {
+              "kind": "literal",
+              "source": "church",
+              "yields": "CE"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "ROMAN",
+                "CE"
+              ],
+              "yields": "ROMANCE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 11,
+      "direction": "across",
+      "row": 3,
+      "col": 0,
+      "answer": "USE",
+      "enumeration": "3",
+      "clue": {
+        "text": "Sue, upset, put to work",
+        "definition": {
+          "text": "put to work",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('upset') of SUE gives USE.",
+          "indicators": [
+            "upset"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Sue",
+              "yields": "USE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 12,
+      "direction": "across",
+      "row": 3,
+      "col": 3,
+      "answer": "SEEN",
+      "enumeration": "4",
+      "clue": {
+        "text": "Look north and be observed",
+        "definition": {
+          "text": "observed",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "SEE (look) + N (north) = SEEN.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Look",
+              "yields": "SEE"
+            },
+            {
+              "kind": "literal",
+              "source": "north",
+              "yields": "N"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "SEE",
+                "N"
+              ],
+              "yields": "SEEN"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 13,
+      "direction": "across",
+      "row": 4,
+      "col": 0,
+      "answer": "MESH",
+      "enumeration": "4",
+      "clue": {
+        "text": "Hems altered to make the net",
+        "definition": {
+          "text": "net",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('altered') of HEMS gives MESH, with the surface staying in the sewing room.",
+          "indicators": [
+            "altered"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Hems",
+              "yields": "MESH"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 14,
+      "direction": "across",
+      "row": 4,
+      "col": 4,
+      "answer": "ROD",
+      "enumeration": "3",
+      "clue": {
+        "text": "Stick buried in aerodynamic design",
+        "definition": {
+          "text": "Stick",
+          "position": "leading"
+        },
+        "wordplay": {
+          "devices": [
+            "hidden"
+          ],
+          "derivation": "ROD is concealed in 'ae ROD ynamic'.",
+          "indicators": [
+            "buried in"
+          ],
+          "checks": [
+            {
+              "kind": "hidden",
+              "source": "aerodynamic",
+              "yields": "ROD"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 1,
+      "direction": "down",
+      "row": 0,
+      "col": 0,
+      "answer": "FORUM",
+      "enumeration": "5",
+      "clue": {
+        "text": "Supporting hesitation, we find a meeting place",
+        "definition": {
+          "text": "meeting place",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "FOR (supporting) + UM (hesitation) = FORUM.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Supporting",
+              "yields": "FOR"
+            },
+            {
+              "kind": "literal",
+              "source": "hesitation",
+              "yields": "UM"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "FOR",
+                "UM"
+              ],
+              "yields": "FORUM"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 2,
+      "direction": "down",
+      "row": 0,
+      "col": 2,
+      "answer": "GAMES",
+      "enumeration": "5",
+      "clue": {
+        "text": "Mages conjured up matches",
+        "definition": {
+          "text": "matches",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('conjured up') of MAGES gives GAMES; 'matches' defines by the sporting sense.",
+          "indicators": [
+            "conjured up"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Mages",
+              "yields": "GAMES"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 3,
+      "direction": "down",
+      "row": 0,
+      "col": 3,
+      "answer": "FLASH",
+      "enumeration": "5",
+      "clue": {
+        "text": "Fine whip produces a sudden light",
+        "definition": {
+          "text": "sudden light",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "F (fine, as on a pencil) + LASH (whip) = FLASH.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Fine",
+              "yields": "F"
+            },
+            {
+              "kind": "literal",
+              "source": "whip",
+              "yields": "LASH"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "F",
+                "LASH"
+              ],
+              "yields": "FLASH"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 4,
+      "direction": "down",
+      "row": 0,
+      "col": 4,
+      "answer": "OWNER",
+      "enumeration": "5",
+      "clue": {
+        "text": "New or unusual proprietor",
+        "definition": {
+          "text": "proprietor",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('unusual') of NEW OR gives OWNER.",
+          "indicators": [
+            "unusual"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "New or",
+              "yields": "OWNER"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 5,
+      "direction": "down",
+      "row": 0,
+      "col": 5,
+      "answer": "RACE",
+      "enumeration": "4",
+      "clue": {
+        "text": "Beheaded grace makes a contest",
+        "definition": {
+          "text": "contest",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "deletion"
+          ],
+          "derivation": "GRACE without its first letter ('beheaded') gives RACE.",
+          "indicators": [
+            "Beheaded"
+          ],
+          "checks": [
+            {
+              "kind": "deletion",
+              "source": "grace",
+              "remove": "G",
+              "yields": "RACE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 6,
+      "direction": "down",
+      "row": 0,
+      "col": 6,
+      "answer": "TREND",
+      "enumeration": "5",
+      "clue": {
+        "text": "Time to tear \u2014 that's the fashion",
+        "definition": {
+          "text": "fashion",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "charade"
+          ],
+          "derivation": "T (time) + REND (tear) = TREND.",
+          "checks": [
+            {
+              "kind": "literal",
+              "source": "Time",
+              "yields": "T"
+            },
+            {
+              "kind": "literal",
+              "source": "tear",
+              "yields": "REND"
+            },
+            {
+              "kind": "concatenation",
+              "parts": [
+                "T",
+                "REND"
+              ],
+              "yields": "TREND"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    },
+    {
+      "number": 8,
+      "direction": "down",
+      "row": 1,
+      "col": 1,
+      "answer": "ROSE",
+      "enumeration": "4",
+      "clue": {
+        "text": "Sore, badly, but got up",
+        "definition": {
+          "text": "got up",
+          "position": "trailing"
+        },
+        "wordplay": {
+          "devices": [
+            "anagram"
+          ],
+          "derivation": "Anagram ('badly') of SORE gives ROSE.",
+          "indicators": [
+            "badly"
+          ],
+          "checks": [
+            {
+              "kind": "anagram",
+              "fodder": "Sore",
+              "yields": "ROSE"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "stage": "hand",
+        "revisions": 0
+      }
+    }
+  ]
+}

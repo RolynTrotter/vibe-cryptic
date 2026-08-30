@@ -125,7 +125,8 @@ plugins/cryptic-setter/
   schema/puzzle.schema.json         the contract every stage reads and writes
   scripts/                          validator, clue checks, page builder
   ui/solver.html                    the solver, one dependency-free file
-  fixtures/                         the calibration set, good and deliberately bad
+  fixtures/                         the calibration set: a barred grid, a
+                                    blocked one, and a deliberately broken copy
 ```
 
 Still to come, as the pipeline lands: a wordlist, the fill scripts, the device
