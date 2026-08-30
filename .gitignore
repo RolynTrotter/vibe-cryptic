@@ -1,0 +1,5 @@
+# Generated puzzles and built pages. Fixtures are the exception and live in
+# fixtures/, tracked on purpose.
+dist/
+__pycache__/
+*.pyc
