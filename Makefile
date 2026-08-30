@@ -11,7 +11,8 @@ check:
 
 ## Validate every fixture.
 validate:
-	python3 $(PLUGIN)/scripts/validate.py $(PLUGIN)/fixtures/first-light-good.json
+	python3 $(PLUGIN)/scripts/validate.py $(PLUGIN)/fixtures/first-light-good.json \
+	                                      $(PLUGIN)/fixtures/behind-bars-good.json
 	python3 $(PLUGIN)/scripts/validate.py --expect-fail $(PLUGIN)/fixtures/first-light-bad.json
 
 ## Build a standalone page: make build PUZZLE=path/to/puzzle.json

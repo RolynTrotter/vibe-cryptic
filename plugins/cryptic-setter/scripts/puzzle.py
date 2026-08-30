@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 
 BLOCK = "#"
 LIGHT = "."
+BAR_RIGHT = "|"
+BAR_BELOW = "-"
 
 # Devices whose mechanics a machine cannot settle. A homophone depends on an
 # accent; a cryptic definition depends on a shared joke. These get judged by the
@@ -52,19 +54,62 @@ class Puzzle:
     checked: set = field(default_factory=set)      # squares in two slots
 
     @property
+    def style(self):
+        """'blocked' (black squares) or 'barred' (bars on cell edges)."""
+        return self.doc["grid"].get("style", "blocked")
+
+    @property
     def pattern(self):
-        return self.doc["grid"]["pattern"]
+        return self.doc["grid"].get("pattern", [])
+
+    @property
+    def bars(self):
+        return self.doc["grid"].get("bars", {})
 
     @property
     def height(self):
+        if self.style == "barred":
+            return len(self.bars.get("below", []))
         return len(self.pattern)
 
     @property
     def width(self):
+        if self.style == "barred":
+            rows = self.bars.get("below", [])
+            return len(rows[0]) if rows else 0
         return len(self.pattern[0]) if self.pattern else 0
 
+    def in_bounds(self, r, c):
+        return 0 <= r < self.height and 0 <= c < self.width
+
     def is_light(self, r, c):
-        return 0 <= r < self.height and 0 <= c < self.width and self.pattern[r][c] == LIGHT
+        """Does this square hold a letter? In a barred grid, all of them do."""
+        if not self.in_bounds(r, c):
+            return False
+        if self.style == "barred":
+            return True
+        return self.pattern[r][c] == LIGHT
+
+    def bar_right(self, r, c):
+        if self.style != "barred" or not self.in_bounds(r, c):
+            return False
+        return self.bars["right"][r][c] == BAR_RIGHT
+
+    def bar_below(self, r, c):
+        if self.style != "barred" or not self.in_bounds(r, c):
+            return False
+        return self.bars["below"][r][c] == BAR_BELOW
+
+    # The two grid styles differ only in what separates neighbouring letters —
+    # a block, or a bar. Expressing both as "are these two squares joined?"
+    # lets slot enumeration and every downstream check stay style-agnostic.
+    def joined_right(self, r, c):
+        return (self.is_light(r, c) and self.is_light(r, c + 1)
+                and not self.bar_right(r, c))
+
+    def joined_below(self, r, c):
+        return (self.is_light(r, c) and self.is_light(r + 1, c)
+                and not self.bar_below(r, c))
 
     def entry_slot(self, entry):
         return self.slots.get((entry["number"], entry["direction"]))
@@ -93,19 +138,21 @@ def enumerate_slots(puzzle):
         for c in range(puzzle.width):
             if not puzzle.is_light(r, c):
                 continue
-            starts_across = not puzzle.is_light(r, c - 1) and puzzle.is_light(r, c + 1)
-            starts_down = not puzzle.is_light(r - 1, c) and puzzle.is_light(r + 1, c)
+            starts_across = (not puzzle.joined_right(r, c - 1)
+                             and puzzle.joined_right(r, c))
+            starts_down = (not puzzle.joined_below(r - 1, c)
+                           and puzzle.joined_below(r, c))
             if not (starts_across or starts_down):
                 continue
             number += 1
             if starts_across:
-                length = 0
-                while puzzle.is_light(r, c + length):
+                length = 1
+                while puzzle.joined_right(r, c + length - 1):
                     length += 1
                 slots[(number, "across")] = Slot(number, "across", r, c, length)
             if starts_down:
-                length = 0
-                while puzzle.is_light(r + length, c):
+                length = 1
+                while puzzle.joined_below(r + length - 1, c):
                     length += 1
                 slots[(number, "down")] = Slot(number, "down", r, c, length)
     return slots
@@ -124,10 +171,33 @@ def load(path):
     with open(path) as fh:
         doc = json.load(fh)
     puzzle = Puzzle(doc=doc)
-    if puzzle.pattern and len({len(row) for row in puzzle.pattern}) == 1:
+    if not grid_shape_errors(puzzle):
         puzzle.slots = enumerate_slots(puzzle)
         puzzle.checked = compute_checked(puzzle.slots)
     return puzzle
+
+
+def grid_shape_errors(puzzle):
+    """Is the grid rectangular and internally consistent?
+
+    Checked before anything else, because every later check indexes into it.
+    """
+    if puzzle.style == "barred":
+        bars = puzzle.bars
+        right, below = bars.get("right", []), bars.get("below", [])
+        if not right or not below:
+            return ["grid: a barred grid needs both bars.right and bars.below"]
+        if len(right) != len(below):
+            return ["grid: bars.right and bars.below have different row counts"]
+        widths = {len(row) for row in right} | {len(row) for row in below}
+        if len(widths) != 1:
+            return ["grid: bar rows are not all the same length"]
+        return []
+    if not puzzle.pattern:
+        return ["grid: a blocked grid needs a pattern"]
+    if len({len(row) for row in puzzle.pattern}) != 1:
+        return ["grid: rows are not all the same length"]
+    return []
 
 
 # --------------------------------------------------------------------------
@@ -135,23 +205,13 @@ def load(path):
 # --------------------------------------------------------------------------
 
 def check_grid(puzzle):
-    errors = []
-    pattern = puzzle.pattern
-    if len({len(row) for row in pattern}) != 1:
-        return ["grid: rows are not all the same length"]
+    errors = grid_shape_errors(puzzle)
+    if errors:
+        return errors
 
     symmetry = puzzle.doc["grid"].get("symmetry", "rotational-180")
     if symmetry == "rotational-180":
-        for r in range(puzzle.height):
-            for c in range(puzzle.width):
-                mirror = pattern[puzzle.height - 1 - r][puzzle.width - 1 - c]
-                if pattern[r][c] != mirror:
-                    errors.append(
-                        f"grid: not 180-degree symmetric at ({r},{c})"
-                    )
-                    break
-            if errors:
-                break
+        errors += check_rotational_symmetry(puzzle)
 
     # Every light must belong to an entry; a stranded square is unsolvable.
     covered = set()
@@ -166,19 +226,43 @@ def check_grid(puzzle):
         if slot.length < 3:
             errors.append(f"grid: {slot.label} is only {slot.length} letters (minimum 3)")
 
-    if puzzle.doc["meta"].get("tradition", "us-cryptic") == "us-cryptic":
-        errors += check_us_cryptic_conventions(puzzle)
+    if puzzle.doc["meta"].get("tradition", "us-cryptic") != "freeform":
+        errors += check_checking_conventions(puzzle)
 
     errors += check_connected(puzzle)
     return errors
 
 
-def check_us_cryptic_conventions(puzzle):
-    """The rules that make a US-style cryptic grid solvable.
+def check_rotational_symmetry(puzzle):
+    """180-degree symmetry, of whichever thing separates the entries."""
+    height, width = puzzle.height, puzzle.width
+    if puzzle.style == "barred":
+        for r in range(height):
+            for c in range(width):
+                # A bar right of (r,c) maps to a bar left of the opposite cell,
+                # which is the bar right of its left-hand neighbour.
+                if puzzle.bar_right(r, c) != puzzle.bar_right(height - 1 - r,
+                                                             width - 2 - c):
+                    return [f"grid: right-hand bar at ({r},{c}) has no symmetric partner"]
+                if puzzle.bar_below(r, c) != puzzle.bar_below(height - 2 - r,
+                                                             width - 1 - c):
+                    return [f"grid: bar below ({r},{c}) has no symmetric partner"]
+        return []
+    for r in range(height):
+        for c in range(width):
+            if puzzle.is_light(r, c) != puzzle.is_light(height - 1 - r, width - 1 - c):
+                return [f"grid: not 180-degree symmetric at ({r},{c})"]
+    return []
 
-    Unchecked letters are guesses; the conventions exist to make sure a solver
-    never has to make two guesses in a row, and never has to guess at the ends
-    of an entry where the wordplay is hardest to confirm.
+
+def check_checking_conventions(puzzle):
+    """The rules that make a cryptic grid solvable, in either style.
+
+    Unchecked letters are guesses. The conventions exist so a solver never has
+    to make two guesses in a row, and never has to guess at the ends of an entry
+    where the wordplay is hardest to confirm. Barred grids have fewer unchecked
+    letters than blocked ones — a bar can cut a run down to a single square —
+    but they are not free of them, so the same rules apply to both.
     """
     errors = []
     for slot in puzzle.slots.values():

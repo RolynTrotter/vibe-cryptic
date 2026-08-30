@@ -162,6 +162,10 @@
   }
   .grid .cell:nth-child(n) { }
   .cell.block { background: var(--block); border-color: var(--block); cursor: default; }
+  /* Barred grids separate entries with heavy edges instead of black squares.
+     Cells are border-box, so a thicker border changes no layout. */
+  .cell.bar-right { border-right: 3px solid var(--rule-strong); }
+  .cell.bar-below { border-bottom: 3px solid var(--rule-strong); }
   .cell.in-cross { background: var(--cell-cross); }
   .cell.in-entry { background: var(--cell-entry); }
   .cell.cursor { background: var(--cell-cursor); }
@@ -329,12 +333,32 @@
     return out;
   }
 
-  var pattern = DATA.pattern;
-  var H = pattern.length, W = pattern[0].length;
+  var style = DATA.style || "blocked";
+  var barred = style === "barred";
+  var pattern = DATA.pattern || [];
+  var bars = DATA.bars || null;
+  var H = barred ? bars.below.length : pattern.length;
+  var W = barred ? bars.below[0].length : pattern[0].length;
   var solution = decodeSolution(DATA.solution);   // row-major, "#" for blocks
-  var isLight = function (r, c) {
-    return r >= 0 && r < H && c >= 0 && c < W && pattern[r][c] === ".";
-  };
+  function inBounds(r, c) { return r >= 0 && r < H && c >= 0 && c < W; }
+  // In a barred grid every square holds a letter; blocks only exist in the
+  // other style.
+  function isLight(r, c) {
+    return inBounds(r, c) && (barred || pattern[r][c] === ".");
+  }
+  function barRight(r, c) {
+    return barred && inBounds(r, c) && bars.right[r][c] === "|";
+  }
+  function barBelow(r, c) {
+    return barred && inBounds(r, c) && bars.below[r][c] === "-";
+  }
+  // Both styles reduce to the same question: are these two squares joined?
+  function joinedRight(r, c) {
+    return isLight(r, c) && isLight(r, c + 1) && !barRight(r, c);
+  }
+  function joinedBelow(r, c) {
+    return isLight(r, c) && isLight(r + 1, c) && !barBelow(r, c);
+  }
   var idx = function (r, c) { return r * W + c; };
 
   // Numbering, computed the same way the Python side computes it.
@@ -345,20 +369,20 @@
     for (var r = 0; r < H; r++) {
       for (var c = 0; c < W; c++) {
         if (!isLight(r, c)) continue;
-        var across = !isLight(r, c - 1) && isLight(r, c + 1);
-        var down = !isLight(r - 1, c) && isLight(r + 1, c);
+        var across = !joinedRight(r, c - 1) && joinedRight(r, c);
+        var down = !joinedBelow(r - 1, c) && joinedBelow(r, c);
         if (!across && !down) continue;
         n += 1;
         numbers[r + "," + c] = n;
         if (across) {
-          var cells = [];
-          for (var cc = c; isLight(r, cc); cc++) cells.push([r, cc]);
+          var cells = [[r, c]];
+          for (var cc = c; joinedRight(r, cc); cc++) cells.push([r, cc + 1]);
           slots[n + ",across"] = { n: n, dir: "across", row: r, col: c,
                                    len: cells.length, cells: cells };
         }
         if (down) {
-          var dcells = [];
-          for (var rr = r; isLight(rr, c); rr++) dcells.push([rr, c]);
+          var dcells = [[r, c]];
+          for (var rr = r; joinedBelow(rr, c); rr++) dcells.push([rr + 1, c]);
           slots[n + ",down"] = { n: n, dir: "down", row: r, col: c,
                                  len: dcells.length, cells: dcells };
         }
@@ -427,7 +451,9 @@
   for (var r = 0; r < H; r++) {
     for (var c = 0; c < W; c++) {
       var div = document.createElement("div");
-      div.className = "cell" + (isLight(r, c) ? "" : " block");
+      div.className = "cell" + (isLight(r, c) ? "" : " block")
+        + (barRight(r, c) ? " bar-right" : "")
+        + (barBelow(r, c) ? " bar-below" : "");
       div.dataset.r = r; div.dataset.c = c;
       if (isLight(r, c)) {
         var num = numbers[r + "," + c];
@@ -576,6 +602,8 @@
   }
 
   function step(dr, dc) {
+    // Arrow keys cross bars freely — a bar ends an entry, it does not wall off
+    // the square beyond it the way a block does.
     if (!state.cursor) return;
     var r = state.cursor[0] + dr, c = state.cursor[1] + dc;
     while (r >= 0 && r < H && c >= 0 && c < W) {
