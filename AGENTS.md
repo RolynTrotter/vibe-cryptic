@@ -11,9 +11,14 @@ and the tickets refer to it.
 
 ## House conventions
 
-**Tradition: Harper's-style.** Grids follow US cryptic conventions — 180°
-rotational symmetry, roughly half the letters checked, never two consecutive
-unchecked letters in an entry, first and last letters of every entry checked.
+**Tradition: Harper's-style.** Harper's uses *barred* grids: no black squares,
+entries separated by bars drawn on cell edges, and every letter checked. Adding
+support for those is issue #18. What exists today is the *blocked* style — black
+squares separate entries and about half the letters are checked — so do not
+describe the blocked conventions as "Harper's"; they are the US blocked-cryptic
+conventions, and they are what the validator currently enforces: 180° rotational
+symmetry, never two consecutive unchecked letters in an entry, and checked first
+and last letters.
 Clues follow the Ximenean fairness rules set out in the skill at
 `plugins/cryptic-setter/skills/cryptic-setter/SKILL.md` — definition at one end,
 wordplay that yields the answer exactly, indicators that govern their fodder.
