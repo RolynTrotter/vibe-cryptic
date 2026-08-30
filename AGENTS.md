@@ -14,16 +14,16 @@ and the tickets refer to it.
 **Tradition: Harper's-style.** Grids follow US cryptic conventions — 180°
 rotational symmetry, roughly half the letters checked, never two consecutive
 unchecked letters in an entry, first and last letters of every entry checked.
-Clues follow the Ximenean fairness rules in
-`skills/cryptic-setter/references/` — definition at one end, wordplay that
-yields the answer exactly, indicators that govern their fodder.
+Clues follow the Ximenean fairness rules set out in the skill at
+`plugins/cryptic-setter/skills/cryptic-setter/SKILL.md` — definition at one end,
+wordplay that yields the answer exactly, indicators that govern their fodder.
 
 **No build step.** Pipeline code is Python 3 with no third-party dependencies.
 The solver UI is a single dependency-free HTML file. A skill that needs
 `npm install` before it runs is a skill that breaks in half the places it runs.
 
 **The puzzle document is the contract.** Every stage reads and writes
-`schema/puzzle.schema.json`. Don't invent side-channels between stages; if a
+`plugins/cryptic-setter/schema/puzzle.schema.json`. Don't invent side-channels between stages; if a
 stage needs to tell a later stage something, it belongs in the document.
 
 **Answers are not grid fills.** `answer` is what the clue yields; `grid_fill`
@@ -33,12 +33,14 @@ accessor, not the field.
 
 ## Working rules
 
-- `python3 scripts/validate.py fixtures/*.json` must pass before you commit.
-  It checks grid conventions, crossing consistency, enumerations, and — where
-  the mechanics allow it — whether the wordplay actually builds the answer.
-- Fixtures in `fixtures/` are the calibration set. `*-good.json` must validate
-  clean; `*-bad.json` must fail, with each defect labelled by what it is. If
-  you make the validator stricter, the bad fixture is where you prove it.
+- `make check` must pass before you commit. It runs the calibration tests over
+  both fixtures, which in turn run the grid conventions, crossing consistency,
+  enumerations, and — where the mechanics allow it — whether the wordplay
+  actually builds the answer.
+- Fixtures in `plugins/cryptic-setter/fixtures/` are the calibration set.
+  `*-good.json` must validate clean; `*-bad.json` must fail, with each defect
+  labelled by what it is and asserted in `scripts/test_fixtures.py`. If you make
+  a checker stricter, the bad fixture is where you prove it.
 - Never loosen a check to make a clue pass. If a clue fails the validator, the
   clue is wrong until proven otherwise.
 
@@ -61,3 +63,20 @@ failing.
   that separation.
 - Don't add a dependency to make something 10% nicer.
 - Don't commit generated puzzles to the repo unless they're fixtures.
+
+## Layout
+
+Everything the skill needs at runtime lives inside the plugin, because a plugin
+whose scripts sit outside it is broken the moment someone installs it elsewhere.
+
+```
+.claude-plugin/marketplace.json     so the repo is an installable marketplace
+plugins/cryptic-setter/
+  .claude-plugin/plugin.json
+  skills/cryptic-setter/SKILL.md    the skill itself
+  schema/puzzle.schema.json         the contract between stages
+  scripts/                          validator, clue checks, page builder
+  ui/solver.html                    the solver, one dependency-free file
+  fixtures/                         the calibration set
+Makefile                            short aliases for the nested paths
+```

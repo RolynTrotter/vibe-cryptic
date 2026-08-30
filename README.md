@@ -93,22 +93,51 @@ Two artifacts flow through the system:
 - **the clue ledger** — the record of every ⟨answer, wordplay⟩ pair we have ever
   published, so stage 5 can catch us repeating ourselves.
 
-## Repo layout (planned)
+## Using it
+
+The repo is a Claude Code plugin marketplace, so the skill installs in one step:
 
 ```
-skills/cryptic-setter/     the skill itself: SKILL.md + references + scripts
-  references/              cryptic device taxonomy, indicator lists, fairness rules
-  scripts/                 grid fill, wordlist tooling, validators
-schema/                    puzzle document + clue ledger schemas
-ui/                        solver front end
-ledger/                    published-clue history
+/plugin marketplace add RolynTrotter/vibe-cryptic
+/plugin install cryptic-setter@vibe-cryptic
 ```
+
+Then ask for a crossword in chat. To work on the repo directly:
+
+```
+make check                                  # calibration tests
+make build PUZZLE=path/to/puzzle.json       # standalone page
+make body  PUZZLE=path/to/puzzle.json       # body to publish as an Artifact
+```
+
+Nothing needs installing to run those — Python 3 and a browser, no packages.
+
+## Repo layout
+
+Everything the skill needs at runtime lives inside the plugin, because a plugin
+whose scripts sit outside it breaks the moment someone installs it elsewhere.
+
+```
+.claude-plugin/marketplace.json     makes the repo an installable marketplace
+plugins/cryptic-setter/
+  .claude-plugin/plugin.json
+  skills/cryptic-setter/SKILL.md    the skill itself
+  schema/puzzle.schema.json         the contract every stage reads and writes
+  scripts/                          validator, clue checks, page builder
+  ui/solver.html                    the solver, one dependency-free file
+  fixtures/                         the calibration set, good and deliberately bad
+```
+
+Still to come, as the pipeline lands: a wordlist, the fill scripts, the device
+taxonomy reference, and the clue ledger.
 
 ## Roadmap
 
-**v0 — skeleton.** Puzzle document schema, a hand-written example puzzle, and a
-solver UI that can render and check it. Proves the delivery half of the north
-star before any generation exists.
+**v0 — skeleton — done.** Puzzle document schema, a hand-set example puzzle, and
+a solver UI that renders and checks it. Proves the delivery half of the north
+star before any generation exists: a validated document becomes a page at a link
+today, with the grid and clues written by hand and the validator enforcing that
+every clue's wordplay actually builds its answer.
 
 **v1 — the pipeline.** Stages 2–6. A request in chat produces a real, reviewed,
 15x15 puzzle at a link. Failed entries cause a full re-fill rather than a local

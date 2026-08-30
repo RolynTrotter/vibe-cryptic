@@ -1,0 +1,23 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "vibe-cryptic",
+  "owner": {
+    "name": "RolynTrotter",
+    "url": "https://github.com/RolynTrotter/vibe-cryptic"
+  },
+  "description": "Tools for writing cryptic crosswords rather than solving them.",
+  "plugins": [
+    {
+      "name": "cryptic-setter",
+      "displayName": "Cryptic Setter",
+      "source": "./plugins/cryptic-setter",
+      "description": "Set a cryptic crossword and publish it as a solvable page: grid conventions, structured clue writing, mechanical soundness checking, and delivery to a link.",
+      "version": "0.1.0",
+      "author": { "name": "RolynTrotter" },
+      "repository": "https://github.com/RolynTrotter/vibe-cryptic",
+      "category": "writing",
+      "keywords": ["crossword", "cryptic", "puzzle", "wordplay"],
+      "tags": ["crossword", "cryptic", "puzzles"]
+    }
+  ]
+}
