@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/RolynTrotter/vibe-cryptic/schema/puzzle.schema.json",
+  "title": "Cryptic puzzle document",
+  "description": "The single object every pipeline stage reads and writes. Stages 2-3 produce the grid and entries, stage 4 adds clues, stages 5-6 add review verdicts, and the UI renders the whole thing.",
+  "type": "object",
+  "required": ["schema_version", "meta", "grid", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "description": "Bumped when a change breaks existing documents.",
+      "const": "0.1"
+    },
+    "meta": {
+      "type": "object",
+      "required": ["title", "setter"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "setter": { "type": "string", "minLength": 1 },
+        "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "difficulty": { "enum": ["gentle", "standard", "tough", "fiendish"] },
+        "tradition": {
+          "description": "Grid convention the pattern is expected to obey.",
+          "enum": ["us-cryptic", "british-cryptic", "freeform"],
+          "default": "us-cryptic"
+        },
+        "theme": { "type": "string" },
+        "instructions": {
+          "description": "Solving instructions for a variety cryptic, shown above the grid. Required in spirit whenever any entry's grid_fill differs from its answer, since the solver cannot deduce the gimmick unaided.",
+          "type": "string"
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "grid": {
+      "type": "object",
+      "required": ["pattern"],
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "description": "One string per row, '#' for a block and '.' for a light. Row 0 is the top row. All rows must be the same length.",
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string", "pattern": "^[.#]+$" }
+        },
+        "symmetry": {
+          "enum": ["rotational-180", "mirror-horizontal", "mirror-vertical", "none"],
+          "default": "rotational-180"
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["number", "direction", "row", "col", "answer"],
+      "additionalProperties": false,
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "direction": { "enum": ["across", "down"] },
+        "row": { "type": "integer", "minimum": 0 },
+        "col": { "type": "integer", "minimum": 0 },
+        "answer": {
+          "description": "What the clue yields, in letters only and uppercase. Spaces and punctuation live in the enumeration, not here.",
+          "type": "string",
+          "pattern": "^[A-Z]+$",
+          "minLength": 2
+        },
+        "grid_fill": {
+          "description": "What is actually written into the squares. Defaults to answer; differs only in a variety cryptic where entries are modified before entry. Must be the length of the slot.",
+          "type": "string",
+          "pattern": "^[A-Z]+$"
+        },
+        "enumeration": {
+          "description": "The bracketed count shown to the solver: '7', '3,4', '5-2'. Must account for exactly the letters in answer.",
+          "type": "string",
+          "pattern": "^[0-9]+([,\\- ][0-9]+)*$"
+        },
+        "clue": { "$ref": "#/$defs/clue" },
+        "review": { "$ref": "#/$defs/review" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "clue": {
+      "type": "object",
+      "required": ["text", "definition", "wordplay"],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "The clue as the solver sees it, without the enumeration (the UI appends that).",
+          "type": "string",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "object",
+          "required": ["text"],
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "description": "The substring of the clue that serves as the definition. Must appear verbatim in clue.text.",
+              "type": "string",
+              "minLength": 1
+            },
+            "position": {
+              "description": "Ximenean fairness wants the definition at one end. 'whole' is for &lit clues, where the entire clue is both definition and wordplay.",
+              "enum": ["leading", "trailing", "whole"]
+            }
+          }
+        },
+        "wordplay": {
+          "type": "object",
+          "required": ["devices", "derivation"],
+          "additionalProperties": false,
+          "properties": {
+            "devices": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "enum": [
+                  "anagram", "charade", "container", "hidden", "reversal",
+                  "deletion", "homophone", "double_definition",
+                  "cryptic_definition", "and_lit", "letter_selection",
+                  "spoonerism", "substitution"
+                ]
+              }
+            },
+            "derivation": {
+              "description": "Human-readable account of how the wordplay builds the answer, e.g. \"SPARE anagrammed ('badly') gives PEARS\".",
+              "type": "string",
+              "minLength": 1
+            },
+            "indicators": {
+              "description": "The words in the clue signalling each device. Must appear verbatim in clue.text.",
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "checks": {
+              "description": "Machine-verifiable assertions about the wordplay. The validator runs every one of these; a clue whose mechanics can be checked and are wrong is rejected outright, with no appeal to intent.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/check" }
+            }
+          }
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": ["kind", "yields"],
+      "properties": {
+        "kind": {
+          "enum": ["anagram", "hidden", "reversal", "concatenation", "deletion", "letter_selection", "literal"]
+        },
+        "yields": {
+          "description": "The letters this step produces, uppercase.",
+          "type": "string",
+          "pattern": "^[A-Z]+$"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "anagram" } } },
+          "then": {
+            "required": ["fodder"],
+            "properties": { "fodder": { "description": "The letters being rearranged, as they appear in the clue.", "type": "string" } }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "hidden" } } },
+          "then": {
+            "required": ["source"],
+            "properties": { "source": { "description": "The clue text the answer hides inside.", "type": "string" } }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "reversal" } } },
+          "then": {
+            "required": ["source"],
+            "properties": { "source": { "type": "string" } }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "concatenation" } } },
+          "then": {
+            "required": ["parts"],
+            "properties": {
+              "parts": {
+                "description": "The pieces, in grid order, that join to make yields. A container clue is a concatenation whose middle part is the contents.",
+                "type": "array",
+                "minItems": 2,
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "deletion" } } },
+          "then": {
+            "required": ["source", "remove"],
+            "properties": {
+              "source": { "type": "string" },
+              "remove": { "description": "The letters deleted from source.", "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "letter_selection" } } },
+          "then": {
+            "required": ["source", "rule"],
+            "properties": {
+              "source": { "description": "The words the letters are taken from, space-separated.", "type": "string" },
+              "rule": { "enum": ["initials", "finals", "alternates-odd", "alternates-even", "centres"] }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "literal" } } },
+          "then": {
+            "required": ["source"],
+            "properties": {
+              "source": { "description": "A word or abbreviation taken as-is, e.g. 'north' giving N. The validator cannot check this one; it exists so the derivation is complete.", "type": "string" }
+            }
+          }
+        }
+      ]
+    },
+    "review": {
+      "description": "Verdicts from stages 5 and 6. Written by the checking subagents, never by the stage that wrote the clue.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "coherence": { "$ref": "#/$defs/verdict" },
+        "quality": { "$ref": "#/$defs/verdict" },
+        "originality": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verdict": { "enum": ["pass", "flag", "fail"] },
+            "prior_uses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "source": { "type": "string" },
+                  "date": { "type": "string" },
+                  "similarity": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "clue": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["verdict"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "enum": ["pass", "flag", "fail"] },
+        "score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "defects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["rule", "detail"],
+            "additionalProperties": false,
+            "properties": {
+              "rule": { "description": "The fairness or quality rule broken, cited by name so the rewrite step knows what to fix.", "type": "string" },
+              "detail": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stage": {
+          "description": "Which pipeline stage last touched this entry.",
+          "enum": ["hand", "seed-fill", "full-fill", "clue-writing", "rework"]
+        },
+        "revisions": {
+          "description": "How many times this entry's clue has been rewritten. A high count means the entry itself may be the problem.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
