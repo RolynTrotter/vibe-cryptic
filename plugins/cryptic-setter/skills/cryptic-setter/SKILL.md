@@ -19,7 +19,13 @@ Ask only what you cannot sensibly default. Defaults: 11x11, standard difficulty,
 no theme, today's date. Then pick a grid.
 
 `$ROOT/fixtures/first-light-good.json` carries a validated 11x11 pattern you can
-reuse outright. To design a new one, US-cryptic (Harper's) conventions are:
+reuse outright.
+
+Two grid styles exist. **Barred** grids — what Harper's itself publishes — have
+no black squares: entries are separated by bars on cell edges and every letter
+is checked. They are not supported yet (issue #18). **Blocked** grids, where
+black squares separate entries and about half the letters are checked, are what
+the tooling handles today, and their conventions are:
 
 - 180-degree rotational symmetry.
 - Every entry at least 3 letters, and every light belongs to some entry.
@@ -27,7 +33,8 @@ reuse outright. To design a new one, US-cryptic (Harper's) conventions are:
 - **Never two consecutive unchecked letters** in an entry.
 - The first and last letter of every entry is checked.
 
-The lattice that satisfies these cheaply: block every odd-row/odd-column square,
+The lattice that satisfies these cheaply (blocked style): block every
+odd-row/odd-column square,
 then break long entries by blocking (even row, odd column) squares to split an
 across, and (odd row, even column) squares to split a down. Keep the block set
 symmetric. The validator checks all of this, so draft a pattern and run it.
