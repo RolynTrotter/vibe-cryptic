@@ -61,16 +61,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Does a version bump come with release notes?
+      # Asks exactly what the release workflow asks — is there a tag for this
+      # version yet — so the answer here is the one the merge will act on.
+      - name: Will merging this release, and are the notes ready?
         run: |
-          read_version() {
-            python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])'
-          }
-          base="$(git show ${{ github.event.pull_request.base.sha }}:plugins/cryptic-setter/.claude-plugin/plugin.json | read_version)"
-          head="$(python3 tools/build_skill_bundle.py --print-version)"
-          if [ "$base" = "$head" ]; then
-            echo "Version unchanged at $head; this merge releases nothing."
+          version="$(python3 tools/build_skill_bundle.py --print-version)"
+          if git rev-parse "refs/tags/v$version" >/dev/null 2>&1; then
+            echo "v$version is already released; merging this republishes nothing."
             exit 0
           fi
-          echo "Version goes $base -> $head, so merging this will release it."
-          python3 tools/release_notes.py --check "$head"
+          echo "No v$version tag yet, so merging this releases $version."
+          python3 tools/release_notes.py --check "$version"
