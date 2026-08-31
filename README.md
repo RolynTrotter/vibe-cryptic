@@ -97,9 +97,9 @@ Two artifacts flow through the system:
 
 The skill installs two ways, from the same source.
 
-**In regular chat.** Download `cryptic-setter-<version>.zip` from the
+**In regular chat.** Download the `.skill` asset from the
 [latest release](https://github.com/RolynTrotter/vibe-cryptic/releases/latest)
-and upload it under Settings -> Capabilities -> Skills.
+and add it under Settings -> Capabilities -> Skills.
 
 **In Claude Code.** The repo is a plugin marketplace, so it installs in one
 step and tracks `main`:
@@ -115,11 +115,15 @@ Either way, then ask for a crossword. To work on the repo directly:
 make check                                  # calibration tests
 make build PUZZLE=path/to/puzzle.json       # standalone page
 make body  PUZZLE=path/to/puzzle.json       # body to publish as an Artifact
-make bundle                                 # the chat skill bundle
+make bundle                                 # the .skill archive for chat
 ```
 
 Nothing needs installing to run those — Python 3 and a browser, no packages.
-Cutting a release is [RELEASING.md](RELEASING.md).
+
+Merging to `main` publishes a release, tagged from the version in the plugin
+manifests; a merge that leaves the version alone republishes nothing. So cutting
+a release means bumping the version and merging — details in
+[RELEASING.md](RELEASING.md).
 
 ## Repo layout
 
@@ -136,8 +140,8 @@ plugins/cryptic-setter/
   ui/solver.html                    the solver, one dependency-free file
   fixtures/                         the calibration set: a barred grid, a
                                     blocked one, and a deliberately broken copy
-tools/                              release tooling: the chat skill bundler
-.github/workflows/                  checks on every push, releases on every tag
+tools/                              release tooling: the .skill packager
+.github/workflows/                  checks on every push, a release on merge
 ```
 
 Still to come, as the pipeline lands: a wordlist, the fill scripts, the device

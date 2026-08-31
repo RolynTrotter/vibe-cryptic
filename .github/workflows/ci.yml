@@ -12,28 +12,65 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    name: python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
 
       # No third-party dependencies by house rule, so there is nothing to
       # install — if this ever needs a pip step, the rule was broken upstream.
+      - name: Byte-compile every script
+        run: python -m compileall -q plugins/cryptic-setter/scripts tools
+
       - name: Calibration tests
         run: make check
 
       - name: Validate the fixtures
         run: make validate
 
-      # Builds the chat bundle and runs the staged copy from outside the repo,
-      # so a skill that only works from a checkout fails here.
-      - name: Build and verify the skill bundle
+      # Builds the .skill, then unpacks it and runs the scripts inside it, so a
+      # dropped file or a path reaching back into the checkout fails here.
+      - name: Build and verify the archive
         run: make bundle
 
       - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.11'
         with:
-          name: skill-bundle
-          path: dist/*.zip
+          name: skill-archive
+          path: dist/*.skill
           if-no-files-found: error
+
+  # Releases happen on merge, so the things a release needs are checked before
+  # the merge, where they can still be fixed rather than reddening main.
+  release-ready:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Does a version bump come with release notes?
+        run: |
+          read_version() {
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])'
+          }
+          base="$(git show ${{ github.event.pull_request.base.sha }}:plugins/cryptic-setter/.claude-plugin/plugin.json | read_version)"
+          head="$(python3 tools/build_skill_bundle.py --print-version)"
+          if [ "$base" = "$head" ]; then
+            echo "Version unchanged at $head; this merge releases nothing."
+            exit 0
+          fi
+          echo "Version goes $base -> $head, so merging this will release it."
+          python3 tools/release_notes.py --check "$head"

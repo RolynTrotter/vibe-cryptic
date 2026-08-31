@@ -58,10 +58,13 @@ accessor, not the field.
   either layout. Anything the skill reads at runtime must be listed in
   `PAYLOAD` in `tools/build_skill_bundle.py`, or it will not ship. `make bundle`
   proves it by running the staged copy from outside the repo.
-- The version lives in two manifests, `plugin.json` and `marketplace.json`, and
-  they must agree with the tag. `CHANGELOG.md` needs a section before a version
-  can release. `make release-check` is what the release workflow runs; see
-  `RELEASING.md`.
+- Releases happen on merge, not by hand: merging to `main` publishes a release
+  if the version changed, and republishes nothing if it did not. So the version
+  bump *is* the release. It lives in two manifests, `plugin.json` and
+  `marketplace.json`, which must agree — the workflow tags from them — and a
+  bump needs its own `CHANGELOG.md` section, which CI checks on the pull
+  request rather than after the merge. `make release-check` is what the release
+  runs; see `RELEASING.md`.
 
 ## Reviewing clues
 

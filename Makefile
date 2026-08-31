@@ -23,7 +23,7 @@ build:
 body:
 	python3 $(PLUGIN)/scripts/build_ui.py $(PUZZLE) --artifact-body -o dist/puzzle-body.html
 
-## Package the skill for chat: dist/cryptic-setter-<version>.zip.
+## Package the skill for chat: dist/cryptic-setter-<version>.skill.
 bundle:
 	python3 tools/build_skill_bundle.py
 
