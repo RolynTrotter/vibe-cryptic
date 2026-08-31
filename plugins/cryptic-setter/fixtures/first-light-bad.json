@@ -6,7 +6,7 @@
     "date": "2026-08-30",
     "difficulty": "standard",
     "tradition": "us-cryptic",
-    "notes": "Calibration fixture of known-bad clues. Every defect below is planted on purpose; scripts/test_fixtures.py asserts each one is caught. If you make a checker stricter, add the new defect here and prove it.\n  1. 3A  anagram fodder 'cab rot' lacks the answer's letters\n  2. 12A definition 'Garment' never appears in the clue\n  3. 13A hidden source does not contain the answer\n  4. 7A  wordplay stops at TRAIL and never reaches TRAILED\n  5. 9A  indicator 'shuffled' is not in the clue\n  6. 16A enumeration (6) does not match a 7-letter answer\n  7. 1D  definition marked leading but the clue starts elsewhere\n  8. 15A deleting E from LEAD gives LAD, not LEA\n  9. 4D  initials of the stated source spell RBD, not ROD\n 10. 14D an anagram clue with no checks, so nothing verifies it\n 11. 8A  answer LOTS does not fit a 3-letter slot"
+    "notes": "Calibration fixture of known-bad clues. Every defect below is planted on purpose; scripts/test_fixtures.py asserts each one is caught. If you make a checker stricter, add the new defect here and prove it.\n  1. 3A  anagram fodder 'cab rot' lacks the answer's letters\n  2. 12A definition 'Garment' never appears in the clue\n  3. 13A hidden source does not contain the answer\n  4. 7A  wordplay stops at TRAIL and never reaches TRAILED\n  5. 9A  indicator 'shuffled' is not in the clue\n  6. 16A enumeration (6) does not match a 7-letter answer\n  7. 1D  definition marked leading but the clue starts elsewhere\n  8. 15A deleting E from LEAD gives LAD, not LEA\n  9. 4D  initials of the stated source spell RBD, not ROD\n 10. 14D an anagram clue with no checks, so nothing verifies it\n 11. 8A  answer LOTS does not fit a 3-letter slot\n 12. 5D  'nothing' does not abbreviate to Z\n 13. 16D 'scrambled' indicates an anagram, not the declared reversal"
   },
   "grid": {
     "pattern": [
@@ -115,7 +115,7 @@
           "derivation": "T (Model T) + RAILED (protested) = TRAILED.",
           "checks": [
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "Model",
               "yields": "T"
             },
@@ -637,9 +637,9 @@
               "yields": "BALL"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "nothing",
-              "yields": "O"
+              "yields": "Z"
             },
             {
               "kind": "literal",
@@ -778,7 +778,7 @@
               "yields": "A"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "king",
               "yields": "R"
             },
@@ -832,7 +832,7 @@
               "yields": "ALAS"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "time",
               "yields": "T"
             },
@@ -889,7 +889,7 @@
       "answer": "MAC",
       "enumeration": "3",
       "clue": {
-        "text": "Engine part raised for a raincoat",
+        "text": "Engine part scrambled for a raincoat",
         "definition": {
           "text": "raincoat",
           "position": "trailing"
@@ -900,7 +900,7 @@
           ],
           "derivation": "CAM (engine part) reversed ('raised', a down entry) gives MAC.",
           "indicators": [
-            "raised"
+            "scrambled"
           ],
           "checks": [
             {

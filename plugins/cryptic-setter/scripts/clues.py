@@ -6,9 +6,29 @@ do the charade parts concatenate to the answer — and stays silent on questions
 taste. A clue that fails here is wrong, not merely unfashionable.
 """
 
+import json
+import os
 import re
 
 from puzzle import UNVERIFIABLE
+
+REFERENCES = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "references"
+)
+
+
+def _load(name):
+    with open(os.path.join(REFERENCES, name)) as fh:
+        return json.load(fh)
+
+
+INDICATORS = {k: v for k, v in _load("indicators.json").items() if k != "_note"}
+ABBREVIATIONS = _load("abbreviations.json")["abbreviations"]
+# Reverse index, so a rejected abbreviation can be told what it *is* short for.
+ABBREVIATION_OF = {}
+for _phrase, _forms in ABBREVIATIONS.items():
+    for _form in _forms:
+        ABBREVIATION_OF.setdefault(_form, []).append(_phrase)
 
 
 def letters(text):
@@ -76,6 +96,22 @@ def _deletion(check):
     return None
 
 
+def _abbreviation(check):
+    phrase = check["source"].strip().lower()
+    yields = check["yields"]
+    accepted = ABBREVIATIONS.get(phrase)
+    if accepted is None:
+        stands_for = ABBREVIATION_OF.get(yields)
+        hint = (f"; {yields} is an abbreviation for: {', '.join(sorted(stands_for))}"
+                if stands_for else "")
+        return (f"{check['source']!r} has no standard abbreviation in the table{hint}"
+                " — add it to references/abbreviations.json if you can defend it")
+    if yields not in accepted:
+        return (f"{check['source']!r} abbreviates to {', '.join(accepted)}, "
+                f"not {yields}")
+    return None
+
+
 def _letter_selection(check):
     words = [w for w in re.split(r"\s+", check["source"].strip()) if w]
     stripped = [letters(w) for w in words]
@@ -103,8 +139,52 @@ _CHECKERS = {
     "concatenation": _concatenation,
     "deletion": _deletion,
     "letter_selection": _letter_selection,
+    "abbreviation": _abbreviation,
     "literal": lambda check: None,  # nothing to verify; it documents the step
 }
+
+
+def _phrase_matches(text, entry):
+    """Does an indicator match a table entry, allowing either to be the longer?
+
+    'is included in' should match the entry 'included in', and the indicator
+    'buried' should match the entry 'buried in'.
+    """
+    if text == entry:
+        return True
+    return bool(re.search(rf"\b{re.escape(entry)}\b", text)
+                or re.search(rf"\b{re.escape(text)}\b", entry))
+
+
+def suggests(indicator, device):
+    text = indicator.strip().lower()
+    return any(_phrase_matches(text, entry.lower())
+               for entry in INDICATORS.get(device, []))
+
+
+def check_indicators(label, clue, devices):
+    """Does each indicator actually signal one of the declared devices?
+
+    When it doesn't, say what it does signal. A misplaced indicator is usually a
+    clue that wants moving rather than discarding, and the rewrite needs to know
+    which way to move it.
+    """
+    errors = []
+    text = clue["text"]
+    for indicator in clue["wordplay"].get("indicators", []):
+        if indicator.lower() not in text.lower():
+            errors.append(f"{label}: indicator {indicator!r} does not appear in the clue")
+            continue
+        if any(suggests(indicator, device) for device in devices):
+            continue
+        elsewhere = sorted(d for d in INDICATORS if suggests(indicator, d))
+        hint = (f", but it does suggest {', '.join(elsewhere)}" if elsewhere
+                else ", and it is not a recognised indicator for anything")
+        errors.append(
+            f"{label}: {indicator!r} does not suggest {', '.join(sorted(devices))}"
+            f"{hint}"
+        )
+    return errors
 
 
 def check_clue(entry):
@@ -132,9 +212,7 @@ def check_clue(entry):
         errors.append(f"{label}: definition is marked whole (&lit) but is not the entire clue")
 
     wordplay = clue["wordplay"]
-    for indicator in wordplay.get("indicators", []):
-        if indicator.lower() not in text.lower():
-            errors.append(f"{label}: indicator {indicator!r} does not appear in the clue")
+    errors += check_indicators(label, clue, set(wordplay["devices"]))
 
     checks = wordplay.get("checks", [])
     # A hidden word has to hide inside words the solver can actually see.

@@ -189,7 +189,7 @@
               "yields": "ROMAN"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "church",
               "yields": "CE"
             },
@@ -269,7 +269,7 @@
               "yields": "SEE"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "north",
               "yields": "N"
             },
@@ -459,7 +459,7 @@
           "derivation": "F (fine, as on a pencil) + LASH (whip) = FLASH.",
           "checks": [
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "Fine",
               "yields": "F"
             },
@@ -575,7 +575,7 @@
           "derivation": "T (time) + REND (tear) = TREND.",
           "checks": [
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "Time",
               "yields": "T"
             },

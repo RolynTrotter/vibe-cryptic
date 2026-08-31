@@ -16,6 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
+import clues
 import puzzle as puzzle_mod
 from validate import SCHEMA_PATH, validate_file
 
@@ -36,6 +37,8 @@ EXPECTED = [
     (9, "4D", "gives RBD, not ROD"),
     (10, "14D", "no checks are given"),
     (11, "8A", "slot holds 3"),
+    (12, "5D", "abbreviates to O, NIL, LOVE, not Z"),
+    (13, "16D", "does not suggest reversal, but it does suggest anagram"),
 ]
 
 
@@ -93,6 +96,25 @@ def check_barred_geometry():
     return failures
 
 
+def check_references_cover_the_schema():
+    """Every device the schema allows must have an indicator list.
+
+    Without this, adding a device to the schema and forgetting the table would
+    make the indicator check pass vacuously for it — the worst kind of failure,
+    since it looks like success.
+    """
+    with open(SCHEMA_PATH) as fh:
+        schema = json.load(fh)
+    devices = set(
+        schema["$defs"]["clue"]["properties"]["wordplay"]["properties"]
+        ["devices"]["items"]["enum"]
+    )
+    missing = sorted(devices - set(clues.INDICATORS))
+    if missing:
+        return [f"references/indicators.json has no entry for: {', '.join(missing)}"]
+    return []
+
+
 def main():
     with open(SCHEMA_PATH) as fh:
         schema = json.load(fh)
@@ -107,6 +129,7 @@ def main():
             )
 
     failures += check_barred_geometry()
+    failures += check_references_cover_the_schema()
 
     bad_errors = validate_file(BAD, schema)
     if not bad_errors:
