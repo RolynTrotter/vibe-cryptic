@@ -1,0 +1,74 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    name: python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # No third-party dependencies by house rule, so there is nothing to
+      # install — if this ever needs a pip step, the rule was broken upstream.
+      - name: Byte-compile every script
+        run: python -m compileall -q plugins/cryptic-setter/scripts tools
+
+      - name: Calibration tests
+        run: make check
+
+      - name: Validate the fixtures
+        run: make validate
+
+      # Builds the .skill, then unpacks it and runs the scripts inside it, so a
+      # dropped file or a path reaching back into the checkout fails here.
+      - name: Build and verify the archive
+        run: make bundle
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.11'
+        with:
+          name: skill-archive
+          path: dist/*.skill
+          if-no-files-found: error
+
+  # Releases happen on merge, so the things a release needs are checked before
+  # the merge, where they can still be fixed rather than reddening main.
+  release-ready:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Asks exactly what the release workflow asks — is there a tag for this
+      # version yet — so the answer here is the one the merge will act on.
+      - name: Will merging this release, and are the notes ready?
+        run: |
+          version="$(python3 tools/build_skill_bundle.py --print-version)"
+          if git rev-parse "refs/tags/v$version" >/dev/null 2>&1; then
+            echo "v$version is already released; merging this republishes nothing."
+            exit 0
+          fi
+          echo "No v$version tag yet, so merging this releases $version."
+          python3 tools/release_notes.py --check "$version"

@@ -11,7 +11,11 @@ for every entry, a clue that is fair, mechanically sound, smooth to read, and
 original — all at once. Work through the stages below in order and let the
 validator, not your own confidence, decide when a clue is correct.
 
-All commands assume `$ROOT` is `${CLAUDE_PLUGIN_ROOT}`.
+All commands below use `$ROOT` for the root of this skill. Installed as part of
+the `cryptic-setter` plugin, that is `${CLAUDE_PLUGIN_ROOT}`; installed on its
+own from the release bundle, it is the directory holding this file, which keeps
+`scripts/`, `schema/`, `ui/` and `fixtures/` beside it. Set it once before
+running anything, and check that `$ROOT/scripts/validate.py` exists.
 
 ## 1. Settle the shape
 
@@ -185,7 +189,9 @@ python3 $ROOT/scripts/build_ui.py puzzle.json --artifact-body -o /tmp/puzzle-bod
 Then publish that file with the Artifact tool and give the solver the URL. The
 build refuses to run on a document that does not validate, which is deliberate.
 
-For a page to open from disk instead, drop `--artifact-body`:
+Without an Artifact tool that takes a file, build the standalone page instead —
+it opens from disk with no server and no network — and hand the solver the file
+itself, or paste its body into whatever HTML surface you do have:
 
 ```bash
 python3 $ROOT/scripts/build_ui.py puzzle.json -o puzzle.html

@@ -1,0 +1,77 @@
+name: release
+
+# Merging to main releases, if and only if the version changed. The version
+# lives in plugin.json (and must agree with marketplace.json, since those are
+# what a plugin install reads); this workflow tags it. A merge that leaves the
+# version alone republishes nothing, so ordinary changes do not cut a release.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Read the version out of the manifests
+        id: v
+        run: |
+          version="$(python3 tools/build_skill_bundle.py --print-version)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "Manifests agree on $version"
+
+      - name: Has this version already been released?
+        id: check
+        run: |
+          if git rev-parse "refs/tags/${{ steps.v.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.v.outputs.tag }} exists; nothing to release."
+            echo "fresh=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "fresh=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Calibration tests
+        if: steps.check.outputs.fresh == 'true'
+        run: make check
+
+      - name: Validate the fixtures
+        if: steps.check.outputs.fresh == 'true'
+        run: make validate
+
+      # Builds the .skill, then unpacks it and runs the scripts inside it, so a
+      # dropped file fails here rather than in someone's chat.
+      - name: Build and verify the archive
+        if: steps.check.outputs.fresh == 'true'
+        run: make bundle
+
+      - name: Write the release notes
+        if: steps.check.outputs.fresh == 'true'
+        run: |
+          python3 tools/release_notes.py "${{ steps.v.outputs.version }}" \
+            > dist/notes.md
+          cat dist/notes.md
+
+      - name: Publish the release
+        if: steps.check.outputs.fresh == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.v.outputs.tag }}" dist/*.skill \
+            --title "cryptic-setter ${{ steps.v.outputs.version }}" \
+            --notes-file dist/notes.md
