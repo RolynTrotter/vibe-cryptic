@@ -95,22 +95,31 @@ Two artifacts flow through the system:
 
 ## Using it
 
-The repo is a Claude Code plugin marketplace, so the skill installs in one step:
+The skill installs two ways, from the same source.
+
+**In regular chat.** Download `cryptic-setter-<version>.zip` from the
+[latest release](https://github.com/RolynTrotter/vibe-cryptic/releases/latest)
+and upload it under Settings -> Capabilities -> Skills.
+
+**In Claude Code.** The repo is a plugin marketplace, so it installs in one
+step and tracks `main`:
 
 ```
 /plugin marketplace add RolynTrotter/vibe-cryptic
 /plugin install cryptic-setter@vibe-cryptic
 ```
 
-Then ask for a crossword in chat. To work on the repo directly:
+Either way, then ask for a crossword. To work on the repo directly:
 
 ```
 make check                                  # calibration tests
 make build PUZZLE=path/to/puzzle.json       # standalone page
 make body  PUZZLE=path/to/puzzle.json       # body to publish as an Artifact
+make bundle                                 # the chat skill bundle
 ```
 
 Nothing needs installing to run those — Python 3 and a browser, no packages.
+Cutting a release is [RELEASING.md](RELEASING.md).
 
 ## Repo layout
 
@@ -127,6 +136,8 @@ plugins/cryptic-setter/
   ui/solver.html                    the solver, one dependency-free file
   fixtures/                         the calibration set: a barred grid, a
                                     blocked one, and a deliberately broken copy
+tools/                              release tooling: the chat skill bundler
+.github/workflows/                  checks on every push, releases on every tag
 ```
 
 Still to come, as the pipeline lands: a wordlist, the fill scripts, the device

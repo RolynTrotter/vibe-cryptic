@@ -3,7 +3,7 @@ PLUGIN := plugins/cryptic-setter
 PUZZLE ?= $(PLUGIN)/fixtures/first-light-good.json
 OUT    ?= dist/puzzle.html
 
-.PHONY: check validate build body clean
+.PHONY: check validate build body bundle release-check clean
 
 ## Run the calibration tests: good fixture clean, every planted defect caught.
 check:
@@ -22,6 +22,13 @@ build:
 ## Build a body for publishing as an Artifact.
 body:
 	python3 $(PLUGIN)/scripts/build_ui.py $(PUZZLE) --artifact-body -o dist/puzzle-body.html
+
+## Package the skill for chat: dist/cryptic-setter-<version>.zip.
+bundle:
+	python3 tools/build_skill_bundle.py
+
+## Everything a release runs, in the order the release workflow runs it.
+release-check: check validate bundle
 
 clean:
 	rm -rf dist

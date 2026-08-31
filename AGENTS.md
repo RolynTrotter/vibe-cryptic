@@ -52,6 +52,16 @@ accessor, not the field.
   a checker stricter, the bad fixture is where you prove it.
 - Never loosen a check to make a clue pass. If a clue fails the validator, the
   clue is wrong until proven otherwise.
+- The skill ships two ways from one source, so keep them from drifting. `SKILL.md`
+  resolves everything against `$ROOT` — `${CLAUDE_PLUGIN_ROOT}` in a plugin
+  install, the folder holding `SKILL.md` in the chat bundle — so never hardcode
+  either layout. Anything the skill reads at runtime must be listed in
+  `PAYLOAD` in `tools/build_skill_bundle.py`, or it will not ship. `make bundle`
+  proves it by running the staged copy from outside the repo.
+- The version lives in two manifests, `plugin.json` and `marketplace.json`, and
+  they must agree with the tag. `CHANGELOG.md` needs a section before a version
+  can release. `make release-check` is what the release workflow runs; see
+  `RELEASING.md`.
 
 ## Reviewing clues
 
@@ -87,5 +97,7 @@ plugins/cryptic-setter/
   scripts/                          validator, clue checks, page builder
   ui/solver.html                    the solver, one dependency-free file
   fixtures/                         the calibration set
+tools/                              release tooling, not shipped to users
+.github/workflows/                  ci on every push, release on every tag
 Makefile                            short aliases for the nested paths
 ```

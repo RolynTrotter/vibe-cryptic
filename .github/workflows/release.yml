@@ -1,0 +1,71 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to release, e.g. v0.1.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Resolve the version from the tag
+        id: version
+        run: |
+          tag="${{ inputs.tag || github.ref_name }}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Calibration tests
+        run: make check
+
+      - name: Validate the fixtures
+        run: make validate
+
+      # --expect-version fails unless plugin.json, marketplace.json and the tag
+      # all state the same version, so a tag can never ship a bundle that
+      # claims to be something else.
+      - name: Build and verify the skill bundle
+        run: |
+          python3 tools/build_skill_bundle.py \
+            --expect-version "${{ steps.version.outputs.version }}"
+
+      - name: Release notes
+        run: |
+          python3 tools/release_notes.py "${{ steps.version.outputs.version }}" \
+            > dist/notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ steps.version.outputs.tag }}"
+          version="${{ steps.version.outputs.version }}"
+          # A tag with a suffix (v0.2.0-rc1) is a prerelease; a plain one is not.
+          prerelease=""
+          case "$version" in *-*) prerelease="--prerelease" ;; esac
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "dist/cryptic-setter-$version.zip" --clobber
+            gh release edit "$tag" --notes-file dist/notes.md
+          else
+            gh release create "$tag" "dist/cryptic-setter-$version.zip" \
+              --title "cryptic-setter $version" \
+              --notes-file dist/notes.md \
+              $prerelease
+          fi

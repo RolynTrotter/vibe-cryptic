@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # No third-party dependencies by house rule, so there is nothing to
+      # install — if this ever needs a pip step, the rule was broken upstream.
+      - name: Calibration tests
+        run: make check
+
+      - name: Validate the fixtures
+        run: make validate
+
+      # Builds the chat bundle and runs the staged copy from outside the repo,
+      # so a skill that only works from a checkout fails here.
+      - name: Build and verify the skill bundle
+        run: make bundle
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skill-bundle
+          path: dist/*.zip
+          if-no-files-found: error
