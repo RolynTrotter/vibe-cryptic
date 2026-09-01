@@ -4,6 +4,30 @@ Versions follow [semantic versioning](https://semver.org). While the major
 version is 0, the setting pipeline is still being proven end to end and the
 puzzle document schema may change between minor versions.
 
+## [0.2.1] — 2026-09-02
+
+Solving on a phone. The grid, the clue and the on-screen keyboard could not
+all be on the screen at once.
+
+**Fixed**
+
+- The page is now laid out against the *visual* viewport rather than the
+  layout viewport, so it responds when the keyboard opens — CSS alone cannot
+  see the keyboard, and on iOS the layout viewport does not shrink for it.
+- The current clue is docked to the top of the keyboard instead of scrolling
+  away, and the grid takes exactly the height left between the masthead and
+  that bar.
+- When vertical space is scarce the masthead compacts, which buys the grid
+  about a third more room with a keyboard open.
+- Tapping the grid uses a pointer event, so the keyboard actually opens on
+  iOS, where a synthesised mouse event does not always count as the gesture.
+
+**Added**
+
+- Previous and next clue arrows in the docked bar, and tapping the clue itself
+  switches to the entry crossing the current square — how you read a crossing
+  on a phone without scrolling to the clue lists.
+
 ## [0.2.0] — 2026-08-31
 
 The device taxonomy, and two more things the validator can prove rather than
