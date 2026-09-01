@@ -1,0 +1,131 @@
+# Words the fill must never use, removed from both bands when the list is built.
+#
+# The public-domain sources are general-purpose lexicons, not puzzle lists, so
+# they carry vocabulary no one wants to meet in a crossword. A grid is read by
+# people who did not choose its words, and a setter who ships a slur or an
+# obscenity has failed them regardless of how sound the clue was.
+#
+# Two forms:
+#   word     removes exactly that word
+#   *stem*   removes any word containing that stem, for families like the
+#            compounds of a swear word
+#
+# THIS LIST IS NOT COMPLETE. It covers plain profanity and vulgar anatomical
+# and sexual terms. It has NOT had an editorial pass for slurs — ethnic,
+# religious, sexual, disability — and it needs one before any puzzle from this
+# tool goes to an audience that did not ask for it. Until then the human
+# writing the clues is the backstop, since every entry is read at that stage.
+# Extend this file rather than working around it.
+
+*fuck*
+*shit*
+*cunt*
+*wank*
+*bollock*
+*bugger*
+arse
+arsed
+arses
+arsehole
+ass
+asses
+asshole
+assholes
+bastard
+bastards
+bitch
+bitched
+bitches
+bitchy
+boner
+boners
+crap
+crapped
+crappier
+crappiest
+crapping
+crappy
+craps
+cum
+dick
+dickhead
+dicks
+dildo
+dildos
+dyke
+dykes
+fag
+faggot
+faggots
+fags
+fanny
+fart
+farted
+farting
+farts
+git
+gits
+horny
+hussy
+jism
+jizz
+knob
+minge
+nigger
+niggers
+nookie
+nooky
+piss
+pissed
+pisses
+pissing
+poop
+pooped
+pooping
+poops
+porn
+porno
+pornos
+porns
+prick
+pricks
+prostitute
+prostitutes
+pube
+pubes
+queer
+queers
+retard
+retarded
+retards
+scrotum
+scrotums
+semen
+skank
+slag
+slags
+slut
+sluts
+spastic
+spastics
+spic
+spics
+tit
+tits
+titties
+titty
+turd
+turds
+twat
+twats
+wetback
+wetbacks
+whore
+whored
+whores
+whoring
+willy
+wog
+wogs
+wop
+wops

@@ -27,8 +27,13 @@ SCHEMA_PATH = os.path.join(
 )
 
 
-def validate_file(path, schema):
-    """Return a list of problems with the document at path."""
+def validate_file(path, schema, require_clues=True):
+    """Return a list of problems with the document at path.
+
+    A document between the fill and the clue writing has entries but no clues,
+    which is a legitimate state for the pipeline to pass along rather than an
+    error — hence require_clues, which callers publishing a puzzle leave on.
+    """
     try:
         with open(path) as fh:
             doc = json.load(fh)
@@ -44,6 +49,8 @@ def validate_file(path, schema):
     errors += puzzle_mod.check_entries(pz)
     errors += puzzle_mod.check_variety_instructions(pz)
     for entry in doc["entries"]:
+        if entry.get("clue") is None and not require_clues:
+            continue
         errors += clues.check_clue(entry)
     return errors
 
@@ -57,6 +64,11 @@ def main():
         help="invert the exit code: for the deliberately-bad fixtures, which "
              "prove the checks catch anything at all",
     )
+    parser.add_argument(
+        "--allow-unclued", action="store_true",
+        help="accept entries with no clue yet, for a document between the fill "
+             "and the clue writing",
+    )
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
@@ -65,7 +77,7 @@ def main():
 
     any_failed = False
     for path in args.paths:
-        errors = validate_file(path, schema)
+        errors = validate_file(path, schema, require_clues=not args.allow_unclued)
         if errors:
             any_failed = True
             print(f"{path}: {len(errors)} problem(s)")

@@ -4,29 +4,40 @@ Versions follow [semantic versioning](https://semver.org). While the major
 version is 0, the setting pipeline is still being proven end to end and the
 puzzle document schema may change between minor versions.
 
-## [0.2.1] — 2026-09-02
+## [0.3.0] — 2026-09-02
 
-Solving on a phone. The grid, the clue and the on-screen keyboard could not
-all be on the screen at once.
-
-**Fixed**
-
-- The page is now laid out against the *visual* viewport rather than the
-  layout viewport, so it responds when the keyboard opens — CSS alone cannot
-  see the keyboard, and on iOS the layout viewport does not shrink for it.
-- The current clue is docked to the top of the keyboard instead of scrolling
-  away, and the grid takes exactly the height left between the masthead and
-  that bar.
-- When vertical space is scarce the masthead compacts, which buys the grid
-  about a third more room with a keyboard open.
-- Tapping the grid uses a pointer event, so the keyboard actually opens on
-  iOS, where a synthesised mouse event does not always count as the gesture.
+Grids fill themselves now, and the solver works on a phone.
 
 **Added**
 
-- Previous and next clue arrows in the docked bar, and tapping the clue itself
-  switches to the entry crossing the current square — how you read a crossing
-  on a phone without scrolling to the clue lists.
+- A banded word list, built from two public-domain sources by
+  `tools/build_wordlist.py`. 25,110 **common** words a setter can clue without
+  apology, and 143,181 **extended** ones for when the grid leaves no choice.
+  The bands answer the question the fill actually asks — not "is this a word"
+  but "can I write a fair clue for it".
+- `data/words-excluded.txt`, applied when the list is built. The sources are
+  general lexicons, not puzzle lists, and a grid is read by people who did not
+  choose its words. Not yet audited for slurs; the file says so.
+- `scripts/fill.py`, a backtracking search over the grid: most constrained slot
+  first, candidates in band order, and forward checking so dead ends are seen a
+  move ahead. It tries the common band alone before allowing obscure words, and
+  reports which it needed. A 15x15 fills in under a second, and a different
+  random seed gives a genuinely different grid.
+- `scripts/wordlist.py`, which indexes by length and by letter-position, lazily
+  per length. A pattern query takes about 30 microseconds.
+- `validate.py --allow-unclued`, for a document between the fill and the clue
+  writing. That is a stage, not a fault.
+
+**Fixed**
+
+- Solving on a phone. The page is laid out against the *visual* viewport, so it
+  responds when the keyboard opens — CSS cannot see the keyboard, and on iOS
+  the layout viewport does not shrink for it. The clue docks to the top of the
+  keyboard instead of scrolling away, the grid takes the height left over, and
+  the masthead compacts when space is short, which is worth about a third more
+  grid. Tapping the grid uses a pointer event, so the keyboard actually opens.
+- Previous and next clue arrows, and tapping the clue switches to the crossing
+  entry — how you read a crossing on a phone without scrolling to the lists.
 
 ## [0.2.0] — 2026-08-31
 

@@ -17,7 +17,9 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 import clues
+import fill as fill_mod
 import puzzle as puzzle_mod
+import wordlist as wordlist_mod
 from validate import SCHEMA_PATH, validate_file
 
 GOOD = os.path.join(ROOT, "fixtures", "first-light-good.json")
@@ -115,6 +117,74 @@ def check_references_cover_the_schema():
     return []
 
 
+def check_wordlist():
+    """The list has to be usable, banded, and free of what must never appear."""
+    failures = []
+    words = wordlist_mod.WordList()
+    stats = words.stats()
+    if stats["by_band"]["common"] < 20000 or stats["by_band"]["extended"] < 100000:
+        failures.append(f"word list looks truncated: {stats}")
+
+    # Band membership is the whole point: common words a setter can clue,
+    # extended ones only when the grid leaves no choice.
+    for word, expected in [("ROMANCE", wordlist_mod.COMMON),
+                           ("BASSOON", wordlist_mod.COMMON),
+                           ("IMMIX", wordlist_mod.EXTENDED),
+                           ("OUTLAIN", wordlist_mod.EXTENDED)]:
+        if words.band(word) != expected:
+            failures.append(
+                f"{word} is in band {words.band(word)}, expected {expected}")
+
+    # The exclusion list is not decorative.
+    for word in ["SHIT", "SLUT", "WHORE", "NIGGER", "RETARD", "CHICKENSHIT"]:
+        if words.contains(word):
+            failures.append(f"excluded word {word} is still in the list")
+    # ...and it must not have taken ordinary words with it.
+    for word in ["ASSESS", "CLASS", "COCKTAIL", "TITANIC", "ATTITUDE"]:
+        if not words.contains(word):
+            failures.append(f"{word} was excluded as collateral damage")
+
+    # A pattern query returns only words that actually match it.
+    for candidate in words.candidates("M.T..EE"):
+        if len(candidate) != 7 or candidate[0] != "M" or candidate[2] != "T":
+            failures.append(f"{candidate} does not match M.T..EE")
+    if "MATINEE" not in words.candidates("M.T..EE"):
+        failures.append("MATINEE is missing from the M.T..EE candidates")
+    return failures
+
+
+def check_fill():
+    """Filling a real grid from scratch must produce a consistent grid."""
+    failures = []
+    with open(BARRED) as fh:
+        doc = json.load(fh)
+    doc["entries"] = []
+    pz = puzzle_mod.Puzzle(doc=doc)
+    pz.slots = puzzle_mod.enumerate_slots(pz)
+    pz.checked = puzzle_mod.compute_checked(pz.slots)
+
+    words = wordlist_mod.WordList()
+    result = fill_mod.solve(pz, words, seed=11, time_budget=25.0)
+    if not result.ok:
+        return [f"could not fill the barred fixture's grid: {result.reason}"]
+    if len(result.entries) != len(pz.slots):
+        failures.append(
+            f"filled {len(result.entries)} of {len(pz.slots)} slots")
+    if len(set(result.entries.values())) != len(result.entries):
+        failures.append("the fill repeated a word")
+
+    # The real test: every crossing has to agree, which check_entries decides.
+    filled = fill_mod.document(pz, result.entries)
+    check = puzzle_mod.Puzzle(doc=filled)
+    check.slots = puzzle_mod.enumerate_slots(check)
+    check.checked = puzzle_mod.compute_checked(check.slots)
+    failures += [f"filled grid: {e}" for e in puzzle_mod.check_entries(check)]
+    for word in result.entries.values():
+        if not words.contains(word):
+            failures.append(f"the fill used {word}, which is not in the list")
+    return failures
+
+
 def main():
     with open(SCHEMA_PATH) as fh:
         schema = json.load(fh)
@@ -130,6 +200,8 @@ def main():
 
     failures += check_barred_geometry()
     failures += check_references_cover_the_schema()
+    failures += check_wordlist()
+    failures += check_fill()
 
     bad_errors = validate_file(BAD, schema)
     if not bad_errors:
@@ -162,6 +234,8 @@ def main():
           f"defects caught")
     print(f"    ({len(bad_errors)} errors reported on the bad fixture; "
           f"{len(BARRED_CASES)} barred grid defects caught)")
+    print("    word list banded and filtered; a grid fills from scratch and "
+          "every crossing agrees")
     return 0
 
 

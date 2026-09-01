@@ -62,15 +62,49 @@ symmetric. The validator checks all of this, so draft a pattern and run it.
 
 ## 2. Fill the grid
 
-Entries only cross on checked squares, so the fill is far freer than it looks: a
-7-letter entry in this lattice is pinned at just four positions, and the letters
-between them are yours to choose.
+Use the search. Filling by hand is slow and produces grids whose crossings
+almost agree.
 
-Work the checked squares as their own small lattice. Choose the long entries
-first, since they carry the most constraints, then fill the short ones around
-them. Prefer words you can imagine cluing — a word that is merely in the
-dictionary but has no definition and no decomposition is a trap you set for
-yourself three steps later.
+```bash
+python3 $ROOT/scripts/fill.py grid.json -o filled.json
+python3 $ROOT/scripts/fill.py grid.json --seed ROMANCE --seed GARLAND -o filled.json
+```
+
+The input is a puzzle document with a grid; any entries it already carries are
+kept and the rest are filled around them. `--seed WORD` places a word in the
+first slot of the right length that can still take it, which is how a theme
+gets into the grid. A 15x15 fills in under a second.
+
+The word list is banded, and the search tries the whole **common** band before
+allowing anything from **extended**. The report says which it needed:
+
+```
+filled 32 entries (common only): 32 common, 0 extended, 43 nodes
+```
+
+A fill that reached into the extended band is not wrong, but it is a warning:
+those words are real and obscure, and you will be cluing them shortly. If a
+grid keeps needing them, the pattern is too constrained — change it rather than
+fighting the clues later.
+
+If the search reports no fill, the grid and the word list cannot satisfy each
+other. Change the block or bar pattern, or drop a seed; do not lower the band
+floor to force it through.
+
+To rework a corner, drop the entries and refill around what remains:
+
+```bash
+python3 $ROOT/scripts/fill.py filled.json --drop 5A --drop 3D -o reworked.json
+```
+
+Check the result before cluing it:
+
+```bash
+python3 $ROOT/scripts/validate.py --allow-unclued filled.json
+```
+
+`--allow-unclued` is right here and nowhere else: a filled grid has no clues
+yet, and that is a stage rather than a fault.
 
 ## 3. Write the clues
 
