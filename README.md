@@ -141,14 +141,17 @@ plugins/cryptic-setter/
   references/                       device taxonomy, fairness rules, and the
                                     indicator and abbreviation tables the
                                     validator reads
+  data/                             the banded word list, built from
+                                    public-domain sources, plus the words the
+                                    fill must never use
   fixtures/                         the calibration set: a barred grid, a
                                     blocked one, and a deliberately broken copy
 tools/                              release tooling: the .skill packager
 .github/workflows/                  checks on every push, a release on merge
 ```
 
-Still to come, as the pipeline lands: a wordlist, the fill scripts, and the
-clue ledger.
+Still to come, as the pipeline lands: generated clue candidates, the
+independent review subagents, and the clue ledger.
 
 ## Roadmap
 

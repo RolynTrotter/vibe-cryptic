@@ -2,8 +2,9 @@
 PLUGIN := plugins/cryptic-setter
 PUZZLE ?= $(PLUGIN)/fixtures/first-light-good.json
 OUT    ?= dist/puzzle.html
+OUT_FILL ?= dist/filled.json
 
-.PHONY: check validate build body bundle release-check clean
+.PHONY: check validate build body bundle fill wordlist release-check clean
 
 ## Run the calibration tests: good fixture clean, every planted defect caught.
 check:
@@ -14,6 +15,14 @@ validate:
 	python3 $(PLUGIN)/scripts/validate.py $(PLUGIN)/fixtures/first-light-good.json \
 	                                      $(PLUGIN)/fixtures/behind-bars-good.json
 	python3 $(PLUGIN)/scripts/validate.py --expect-fail $(PLUGIN)/fixtures/first-light-bad.json
+
+## Fill a grid: make fill GRID=path/to/grid.json
+fill:
+	python3 $(PLUGIN)/scripts/fill.py $(GRID) -o $(OUT_FILL)
+
+## Rebuild the word list from its public-domain sources (needs network).
+wordlist:
+	python3 tools/build_wordlist.py
 
 ## Build a standalone page: make build PUZZLE=path/to/puzzle.json
 build:

@@ -12,7 +12,7 @@
       "displayName": "Cryptic Setter",
       "source": "./plugins/cryptic-setter",
       "description": "Set a cryptic crossword and publish it as a solvable page: grid conventions, structured clue writing, mechanical soundness checking, and delivery to a link.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "RolynTrotter"
       },
