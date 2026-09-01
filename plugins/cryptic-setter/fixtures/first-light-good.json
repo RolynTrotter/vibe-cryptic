@@ -115,7 +115,7 @@
           "derivation": "T (Model T) + RAILED (protested) = TRAILED.",
           "checks": [
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "Model",
               "yields": "T"
             },
@@ -637,7 +637,7 @@
               "yields": "BALL"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "nothing",
               "yields": "O"
             },
@@ -778,7 +778,7 @@
               "yields": "A"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "king",
               "yields": "R"
             },
@@ -832,7 +832,7 @@
               "yields": "ALAS"
             },
             {
-              "kind": "literal",
+              "kind": "abbreviation",
               "source": "time",
               "yields": "T"
             },

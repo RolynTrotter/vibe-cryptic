@@ -79,6 +79,24 @@ For each entry, work backward: **answer -> definition -> wordplay -> surface.**
 Enumerate the mechanics *first* and apply taste *second*. Sound options judged
 by taste beats taste inventing options and hoping they are sound.
 
+Two references carry the detail, and the checking stages cite the same ones, so
+a disagreement between writing and checking can be settled by pointing at a
+section rather than argued:
+
+- `$ROOT/references/devices.md` — each device's mechanics, what makes it sound,
+  and how it usually goes wrong.
+- `$ROOT/references/fairness.md` — the fairness rules, and worked examples of
+  the same answer clued badly and well.
+
+Two more are read by the validator, not just by you:
+
+- `$ROOT/references/indicators.json` — which words signal which device. An
+  indicator declared for a device whose list does not contain it is an error,
+  and the error names the device the word *does* suggest.
+- `$ROOT/references/abbreviations.json` — the abbreviations a setter may fairly
+  use. Use the `abbreviation` check kind for these and they get verified; an
+  invented abbreviation is rejected.
+
 Devices, with what each needs:
 
 | Device | Mechanic | Needs |
@@ -103,7 +121,10 @@ Fairness rules that are not negotiable:
 - Indicators must be positioned so they actually govern their fodder.
 - Anagram fodder appears literally in the clue; a hidden word hides in words the
   solver can actually see.
-- Abbreviations must be standard and defensible, not invented.
+- Abbreviations must be standard and defensible, not invented. Declare them
+  with the `abbreviation` check kind so the table verifies them.
+- Every word must do a job: definition, wordplay, indicator, or link. A word
+  doing none of those is padding, which is a fairness fault, not a style one.
 
 Then make the surface read as natural English about something else entirely.
 "Craig rolled a smoke" is a clue; "Anagram of CRAIG gives a smoke" is a
@@ -133,7 +154,12 @@ python3 $ROOT/scripts/validate.py puzzle.json
 
 This checks grid conventions, that entries fit their slots and agree at every
 crossing, that enumerations match, that definitions appear where they claim to,
-and that the wordplay arithmetic actually works.
+that indicators signal the device they are declared for, that abbreviations are
+standard, and that the wordplay arithmetic actually works.
+
+Semantic steps — "Team" giving SIDE, "nipper" giving BITER — are still declared
+as `literal` and go unverified. Treat those as the weak point of any clue you
+write, because nothing else will catch them yet.
 
 **Never loosen a check to make a clue pass.** A failing clue is wrong until
 proven otherwise; fix the clue, or discard the entry and refill that corner. If

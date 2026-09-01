@@ -329,8 +329,10 @@
             "concatenation",
             "deletion",
             "letter_selection",
+            "abbreviation",
             "literal"
-          ]
+          ],
+          "description": "'abbreviation' is verified against references/abbreviations.json; 'literal' covers a step nothing can check yet, such as a synonym, and exists so the derivation is complete."
         },
         "yields": {
           "description": "The letters this step produces, uppercase.",
@@ -491,6 +493,26 @@
             "properties": {
               "source": {
                 "description": "A word or abbreviation taken as-is, e.g. 'north' giving N. The validator cannot check this one; it exists so the derivation is complete.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "abbreviation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "source"
+            ],
+            "properties": {
+              "source": {
+                "description": "The phrase in the clue that the abbreviation stands for, e.g. 'king' giving R. Checked against the abbreviation table; an invented abbreviation is unfair and is rejected.",
                 "type": "string"
               }
             }

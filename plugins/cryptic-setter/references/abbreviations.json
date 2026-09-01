@@ -1,0 +1,779 @@
+{
+  "_note": "Standard cryptic abbreviations, keyed by the phrase a clue may use for them. A setter may use any abbreviation listed for a phrase; anything else is an invented abbreviation, which is unfair. This is a starting set, not the whole of the tradition \u2014 add entries you can defend from a dictionary or from established crossword usage rather than relaxing the check. Synonyms are a different question and are not covered here.",
+  "abbreviations": {
+    "about": [
+      "C",
+      "CA",
+      "RE",
+      "ON"
+    ],
+    "ace": [
+      "A"
+    ],
+    "adult": [
+      "A"
+    ],
+    "advertisement": [
+      "AD"
+    ],
+    "against": [
+      "V",
+      "VS"
+    ],
+    "aluminium": [
+      "AL"
+    ],
+    "american": [
+      "US",
+      "USA",
+      "A"
+    ],
+    "ampere": [
+      "A"
+    ],
+    "and": [
+      "N"
+    ],
+    "answer": [
+      "A",
+      "ANS"
+    ],
+    "area": [
+      "A"
+    ],
+    "arrived": [
+      "ARR"
+    ],
+    "artist": [
+      "RA"
+    ],
+    "australia": [
+      "AUS",
+      "OZ"
+    ],
+    "bachelor": [
+      "BA",
+      "B"
+    ],
+    "back": [
+      "B"
+    ],
+    "bass": [
+      "B"
+    ],
+    "beginner": [
+      "L"
+    ],
+    "bishop": [
+      "B",
+      "RR"
+    ],
+    "black": [
+      "B"
+    ],
+    "book": [
+      "B",
+      "OT",
+      "NT"
+    ],
+    "born": [
+      "B",
+      "NEE"
+    ],
+    "boy": [
+      "B"
+    ],
+    "british": [
+      "B",
+      "BR"
+    ],
+    "brother": [
+      "BR",
+      "BRO"
+    ],
+    "building": [
+      "BLDG"
+    ],
+    "cape": [
+      "C"
+    ],
+    "capacity": [
+      "C"
+    ],
+    "caught": [
+      "C"
+    ],
+    "cent": [
+      "C"
+    ],
+    "century": [
+      "C"
+    ],
+    "chapter": [
+      "C",
+      "CH"
+    ],
+    "child": [
+      "CH"
+    ],
+    "church": [
+      "CE",
+      "CH"
+    ],
+    "circa": [
+      "C"
+    ],
+    "clubs": [
+      "C"
+    ],
+    "cold": [
+      "C"
+    ],
+    "company": [
+      "CO",
+      "LTD",
+      "PLC"
+    ],
+    "conservative": [
+      "C",
+      "CON",
+      "TORY"
+    ],
+    "copper": [
+      "CU"
+    ],
+    "current": [
+      "I",
+      "AC",
+      "DC"
+    ],
+    "date": [
+      "D"
+    ],
+    "daughter": [
+      "D"
+    ],
+    "day": [
+      "D"
+    ],
+    "dead": [
+      "D"
+    ],
+    "degree": [
+      "BA",
+      "MA",
+      "PHD",
+      "DEG"
+    ],
+    "democrat": [
+      "D"
+    ],
+    "department": [
+      "DEPT"
+    ],
+    "diamonds": [
+      "D"
+    ],
+    "direction": [
+      "N",
+      "S",
+      "E",
+      "W"
+    ],
+    "doctor": [
+      "DR",
+      "MD",
+      "MO",
+      "GP"
+    ],
+    "drive": [
+      "D"
+    ],
+    "duke": [
+      "D"
+    ],
+    "earth": [
+      "E"
+    ],
+    "east": [
+      "E"
+    ],
+    "edition": [
+      "ED"
+    ],
+    "editor": [
+      "ED"
+    ],
+    "electric": [
+      "E"
+    ],
+    "energy": [
+      "E"
+    ],
+    "engineer": [
+      "RE",
+      "ENG"
+    ],
+    "england": [
+      "E",
+      "ENG"
+    ],
+    "english": [
+      "E",
+      "ENG"
+    ],
+    "european": [
+      "E",
+      "EU"
+    ],
+    "fahrenheit": [
+      "F"
+    ],
+    "false": [
+      "F"
+    ],
+    "father": [
+      "FR",
+      "PA",
+      "DAD"
+    ],
+    "fellow": [
+      "F",
+      "FRS"
+    ],
+    "female": [
+      "F"
+    ],
+    "fine": [
+      "F"
+    ],
+    "first": [
+      "I",
+      "A"
+    ],
+    "five": [
+      "V"
+    ],
+    "force": [
+      "F"
+    ],
+    "france": [
+      "F",
+      "FR"
+    ],
+    "french": [
+      "F",
+      "FR"
+    ],
+    "gas": [
+      "G"
+    ],
+    "german": [
+      "G",
+      "GER"
+    ],
+    "gold": [
+      "AU",
+      "OR"
+    ],
+    "good": [
+      "G"
+    ],
+    "grand": [
+      "G",
+      "K"
+    ],
+    "gram": [
+      "G"
+    ],
+    "great": [
+      "GT"
+    ],
+    "greek": [
+      "GR"
+    ],
+    "group": [
+      "G"
+    ],
+    "hard": [
+      "H"
+    ],
+    "heart": [
+      "H"
+    ],
+    "height": [
+      "H"
+    ],
+    "hospital": [
+      "H"
+    ],
+    "hot": [
+      "H"
+    ],
+    "hour": [
+      "H",
+      "HR"
+    ],
+    "hundred": [
+      "C",
+      "H"
+    ],
+    "ice": [
+      "I"
+    ],
+    "india": [
+      "I",
+      "IND"
+    ],
+    "iron": [
+      "FE"
+    ],
+    "island": [
+      "I",
+      "IS"
+    ],
+    "italian": [
+      "I",
+      "IT"
+    ],
+    "italy": [
+      "I",
+      "IT"
+    ],
+    "jack": [
+      "J"
+    ],
+    "joule": [
+      "J"
+    ],
+    "junior": [
+      "JR"
+    ],
+    "key": [
+      "K"
+    ],
+    "kilo": [
+      "K"
+    ],
+    "king": [
+      "K",
+      "R",
+      "ER"
+    ],
+    "knight": [
+      "N",
+      "KT"
+    ],
+    "lake": [
+      "L"
+    ],
+    "large": [
+      "L"
+    ],
+    "latitude": [
+      "LAT"
+    ],
+    "learner": [
+      "L"
+    ],
+    "left": [
+      "L"
+    ],
+    "length": [
+      "L"
+    ],
+    "liberal": [
+      "L",
+      "LIB"
+    ],
+    "line": [
+      "L"
+    ],
+    "litre": [
+      "L"
+    ],
+    "loud": [
+      "F"
+    ],
+    "love": [
+      "O"
+    ],
+    "male": [
+      "M"
+    ],
+    "many": [
+      "C",
+      "D",
+      "M"
+    ],
+    "mark": [
+      "M"
+    ],
+    "married": [
+      "M"
+    ],
+    "mass": [
+      "M"
+    ],
+    "master": [
+      "MA",
+      "M"
+    ],
+    "maximum": [
+      "MAX"
+    ],
+    "medium": [
+      "M"
+    ],
+    "member": [
+      "MP",
+      "MEM"
+    ],
+    "metre": [
+      "M"
+    ],
+    "mile": [
+      "M",
+      "MI"
+    ],
+    "million": [
+      "M"
+    ],
+    "minute": [
+      "MIN",
+      "M"
+    ],
+    "model": [
+      "T"
+    ],
+    "monarch": [
+      "ER",
+      "R",
+      "K",
+      "Q"
+    ],
+    "month": [
+      "MO"
+    ],
+    "mother": [
+      "MA",
+      "MUM"
+    ],
+    "motorway": [
+      "M"
+    ],
+    "mountain": [
+      "MT"
+    ],
+    "name": [
+      "N"
+    ],
+    "new": [
+      "N"
+    ],
+    "newton": [
+      "N"
+    ],
+    "nitrogen": [
+      "N"
+    ],
+    "north": [
+      "N"
+    ],
+    "note": [
+      "N",
+      "TE",
+      "DO",
+      "RE",
+      "MI",
+      "FA",
+      "LA",
+      "SO"
+    ],
+    "nothing": [
+      "O",
+      "NIL",
+      "LOVE"
+    ],
+    "novice": [
+      "L"
+    ],
+    "number": [
+      "NO",
+      "N"
+    ],
+    "old": [
+      "O"
+    ],
+    "one": [
+      "I",
+      "A",
+      "AN"
+    ],
+    "operation": [
+      "OP"
+    ],
+    "oxygen": [
+      "O"
+    ],
+    "page": [
+      "P"
+    ],
+    "parking": [
+      "P"
+    ],
+    "party": [
+      "DO"
+    ],
+    "penny": [
+      "P",
+      "D"
+    ],
+    "phosphorus": [
+      "P"
+    ],
+    "piano": [
+      "P"
+    ],
+    "pint": [
+      "PT"
+    ],
+    "point": [
+      "N",
+      "S",
+      "E",
+      "W",
+      "PT"
+    ],
+    "pole": [
+      "N",
+      "S"
+    ],
+    "pound": [
+      "L",
+      "LB"
+    ],
+    "power": [
+      "P"
+    ],
+    "president": [
+      "P"
+    ],
+    "priest": [
+      "FR"
+    ],
+    "professional": [
+      "PRO"
+    ],
+    "professor": [
+      "PROF"
+    ],
+    "pupil": [
+      "L"
+    ],
+    "quarter": [
+      "N",
+      "S",
+      "E",
+      "W",
+      "Q"
+    ],
+    "queen": [
+      "Q",
+      "ER",
+      "R"
+    ],
+    "question": [
+      "Q"
+    ],
+    "quiet": [
+      "P",
+      "SH"
+    ],
+    "radius": [
+      "R"
+    ],
+    "railway": [
+      "RY",
+      "BR"
+    ],
+    "record": [
+      "EP",
+      "LP",
+      "CD"
+    ],
+    "red": [
+      "R"
+    ],
+    "republican": [
+      "R"
+    ],
+    "resistance": [
+      "R"
+    ],
+    "right": [
+      "R"
+    ],
+    "river": [
+      "R"
+    ],
+    "road": [
+      "RD"
+    ],
+    "royal": [
+      "R"
+    ],
+    "runs": [
+      "R"
+    ],
+    "saint": [
+      "ST"
+    ],
+    "school": [
+      "SCH"
+    ],
+    "second": [
+      "S",
+      "SEC",
+      "MO"
+    ],
+    "silver": [
+      "AG"
+    ],
+    "sister": [
+      "SIS",
+      "SR"
+    ],
+    "six": [
+      "VI"
+    ],
+    "small": [
+      "S"
+    ],
+    "society": [
+      "S",
+      "SOC"
+    ],
+    "soft": [
+      "P"
+    ],
+    "son": [
+      "S"
+    ],
+    "soprano": [
+      "S"
+    ],
+    "south": [
+      "S"
+    ],
+    "spades": [
+      "S"
+    ],
+    "square": [
+      "SQ"
+    ],
+    "street": [
+      "ST"
+    ],
+    "student": [
+      "L"
+    ],
+    "sulphur": [
+      "S"
+    ],
+    "sun": [
+      "S"
+    ],
+    "temperature": [
+      "T"
+    ],
+    "tenor": [
+      "T"
+    ],
+    "time": [
+      "T"
+    ],
+    "ton": [
+      "T"
+    ],
+    "try": [
+      "T"
+    ],
+    "turn": [
+      "U"
+    ],
+    "university": [
+      "U",
+      "UNI"
+    ],
+    "upper class": [
+      "U"
+    ],
+    "very": [
+      "V"
+    ],
+    "victory": [
+      "V"
+    ],
+    "volt": [
+      "V"
+    ],
+    "volume": [
+      "V",
+      "VOL"
+    ],
+    "watt": [
+      "W"
+    ],
+    "week": [
+      "WK"
+    ],
+    "weight": [
+      "WT"
+    ],
+    "west": [
+      "W"
+    ],
+    "wicket": [
+      "W"
+    ],
+    "wide": [
+      "W"
+    ],
+    "width": [
+      "W"
+    ],
+    "wife": [
+      "W"
+    ],
+    "with": [
+      "W"
+    ],
+    "work": [
+      "OP"
+    ],
+    "writer": [
+      "PEN"
+    ],
+    "yard": [
+      "YD"
+    ],
+    "year": [
+      "Y",
+      "YR"
+    ],
+    "yes": [
+      "Y",
+      "AY",
+      "DA",
+      "SI"
+    ],
+    "young": [
+      "Y"
+    ],
+    "zero": [
+      "O",
+      "Z"
+    ]
+  }
+}

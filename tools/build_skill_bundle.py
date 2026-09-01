@@ -33,7 +33,7 @@ MARKETPLACE = os.path.join(REPO, ".claude-plugin", "marketplace.json")
 PLUGIN_JSON = os.path.join(PLUGIN, ".claude-plugin", "plugin.json")
 
 # Runtime data the skill reads. Anything not listed here does not ship.
-PAYLOAD = ["schema", "scripts", "ui", "fixtures"]
+PAYLOAD = ["schema", "scripts", "ui", "fixtures", "references"]
 EXCLUDE_DIRS = {"__pycache__", ".claude-plugin"}
 EXCLUDE_SUFFIXES = (".pyc",)
 

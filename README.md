@@ -138,14 +138,17 @@ plugins/cryptic-setter/
   schema/puzzle.schema.json         the contract every stage reads and writes
   scripts/                          validator, clue checks, page builder
   ui/solver.html                    the solver, one dependency-free file
+  references/                       device taxonomy, fairness rules, and the
+                                    indicator and abbreviation tables the
+                                    validator reads
   fixtures/                         the calibration set: a barred grid, a
                                     blocked one, and a deliberately broken copy
 tools/                              release tooling: the .skill packager
 .github/workflows/                  checks on every push, a release on merge
 ```
 
-Still to come, as the pipeline lands: a wordlist, the fill scripts, the device
-taxonomy reference, and the clue ledger.
+Still to come, as the pipeline lands: a wordlist, the fill scripts, and the
+clue ledger.
 
 ## Roadmap
 

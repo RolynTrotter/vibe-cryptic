@@ -68,6 +68,11 @@ accessor, not the field.
 
 ## Reviewing clues
 
+The standards live in `plugins/cryptic-setter/references/` — `devices.md` for
+mechanics, `fairness.md` for the rules and worked surface examples, and
+`indicators.json` / `abbreviations.json` for the tables the validator reads.
+Cite them rather than relitigating; extend them rather than working around them.
+
 When you are asked to check a clue, you are checking three separate things and
 they should not bleed into each other:
 
