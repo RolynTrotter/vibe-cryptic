@@ -113,6 +113,8 @@ Either way, then ask for a crossword. To work on the repo directly:
 
 ```
 make check                                  # calibration tests
+make grid SIZE=11                           # draw a grid that obeys the conventions
+make fill GRID=dist/grid.json               # fill it from the banded word list
 make build PUZZLE=path/to/puzzle.json       # standalone page
 make body  PUZZLE=path/to/puzzle.json       # body to publish as an Artifact
 make bundle                                 # the .skill archive for chat
@@ -136,7 +138,8 @@ plugins/cryptic-setter/
   .claude-plugin/plugin.json
   skills/cryptic-setter/SKILL.md    the skill itself
   schema/puzzle.schema.json         the contract every stage reads and writes
-  scripts/                          validator, clue checks, page builder
+  scripts/                          grid generator, fill search, validator,
+                                    clue checks, table lookup, page builder
   ui/solver.html                    the solver, one dependency-free file
   references/                       device taxonomy, fairness rules, and the
                                     indicator and abbreviation tables the

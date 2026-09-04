@@ -4,6 +4,42 @@ Versions follow [semantic versioning](https://semver.org). While the major
 version is 0, the setting pipeline is still being proven end to end and the
 puzzle document schema may change between minor versions.
 
+## [0.4.0] — 2026-09-04
+
+The skill goes to work instead of reading up first.
+
+**Added**
+
+- `scripts/grid.py`, which draws the geometry. It blocks the odd/odd lattice —
+  which satisfies every convention by construction — then breaks entries by
+  blocking squares that were unchecked anyway, so the crossings are never
+  disturbed, and puts the result through the same `check_grid` the validator
+  runs. Blocked or barred, any odd size, with the clue count and the pattern
+  printed. An 11x11 comes out with about the length spread of the hand-set
+  fixture. Hand-drawing a pattern and iterating against the validator was the
+  slowest step in setting a puzzle and is now not a step at all.
+- `scripts/lookup.py`, which asks the indicator and abbreviation tables about
+  one word: what device it signals, what it abbreviates to, or the indicators
+  for a single device. The tables are 16KB of validator input; a setter wants
+  one line of it.
+- Calibration tests for both: every grid the generator draws, across four
+  blocked sizes and two barred ones and four seeds each, must pass `check_grid`
+  clean, and a barred grid must come out fully checked. SKILL.md's worked entry
+  must pass the clue checker, and every `$ROOT` path it names must exist.
+
+**Changed**
+
+- SKILL.md is rewritten around the work rather than around the library
+  (issue #25). It carries the working minimum inline — the devices, the fairness
+  rules, the check kinds and their fields, and one complete worked entry — so
+  the up-front read is SKILL.md and nothing else. It says plainly that the
+  scripts are run and never read, that the validator's errors are the contract,
+  and that the JSON tables are looked up one word at a time. The references are
+  hung off the questions that send you to them instead of being listed as
+  background. Setting a puzzle from cold now starts with a command.
+- Validating a grid that has no entries yet says so, and gives the fill command,
+  rather than reporting an empty array where the schema wanted an item.
+
 ## [0.3.0] — 2026-09-02
 
 Grids fill themselves now, and the solver works on a phone.

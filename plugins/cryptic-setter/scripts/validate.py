@@ -40,6 +40,13 @@ def validate_file(path, schema, require_clues=True):
     except json.JSONDecodeError as exc:
         return [f"not valid JSON: {exc}"]
 
+    # A grid straight from grid.py has no entries yet. The schema calls that
+    # an empty array where one item was wanted, which is true and unhelpful;
+    # what the reader needs is the next command.
+    if isinstance(doc.get("entries"), list) and not doc["entries"]:
+        return ["entries: this document has a grid but nothing in it yet — "
+                "fill it first: python3 scripts/fill.py <this file> -o filled.json"]
+
     errors = minischema.validate(doc, schema)
     if errors:
         return errors  # the later layers assume a well-formed document

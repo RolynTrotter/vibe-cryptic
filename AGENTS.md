@@ -11,6 +11,11 @@ and the tickets refer to it.
 
 ## House conventions
 
+**Grids are generated, not drawn.** `scripts/grid.py` builds the geometry from
+a lattice that satisfies the conventions by construction, then puts it through
+the same `check_grid` the validator runs. Nobody — person or model — should be
+hand-placing blocks and iterating against the validator.
+
 **Tradition: Harper's-style.** Two grid styles are supported, set by
 `grid.style`. *Barred* grids — what Harper's publishes — have no black squares:
 entries are separated by bars drawn on cell edges. *Blocked* grids separate them
@@ -26,6 +31,17 @@ unchecked letters in an entry, and checked first and last letters.
 Clues follow the Ximenean fairness rules set out in the skill at
 `plugins/cryptic-setter/skills/cryptic-setter/SKILL.md` — definition at one end,
 wordplay that yields the answer exactly, indicators that govern their fodder.
+
+**The skill reads one file.** SKILL.md is the only thing a setter opens before
+going to work, and it carries the working minimum inline — the devices, the
+fairness rules, the check kinds, and one complete worked entry. Everything under
+`scripts/` is run and never read: when a checker's behaviour is not obvious from
+what it prints, improve the message rather than expecting anyone to open the
+source. The JSON tables in `references/` are validator inputs, asked one word at
+a time through `scripts/lookup.py`. `devices.md` and `fairness.md` are opened
+when a specific question arises, and SKILL.md names the question that sends you
+to each. Any new pointer in SKILL.md needs the question that justifies opening
+it; a list of things to know gets read cover to cover, which is issue #25.
 
 **No build step.** Pipeline code is Python 3 with no third-party dependencies.
 The solver UI is a single dependency-free HTML file. A skill that needs
@@ -102,7 +118,8 @@ plugins/cryptic-setter/
   .claude-plugin/plugin.json
   skills/cryptic-setter/SKILL.md    the skill itself
   schema/puzzle.schema.json         the contract between stages
-  scripts/                          validator, clue checks, page builder
+  scripts/                          grid generator, fill search, validator,
+                                    clue checks, table lookup, page builder
   ui/solver.html                    the solver, one dependency-free file
   fixtures/                         the calibration set
 tools/                              release tooling, not shipped to users

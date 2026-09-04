@@ -10,6 +10,8 @@ fixtures/first-light-bad.json by the number in that file's meta.notes.
 
 import json
 import os
+import random
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -18,10 +20,16 @@ sys.path.insert(0, HERE)
 
 import clues
 import fill as fill_mod
+import grid as grid_mod
 import puzzle as puzzle_mod
 import wordlist as wordlist_mod
 from validate import SCHEMA_PATH, validate_file
 
+# The plugin keeps SKILL.md under skills/<name>/; the chat bundle hoists it to
+# the top. Find it either way, so the archive runs these tests as-shipped.
+SKILL = os.path.join(ROOT, "skills", "cryptic-setter", "SKILL.md")
+if not os.path.exists(SKILL):
+    SKILL = os.path.join(ROOT, "SKILL.md")
 GOOD = os.path.join(ROOT, "fixtures", "first-light-good.json")
 BAD = os.path.join(ROOT, "fixtures", "first-light-bad.json")
 BARRED = os.path.join(ROOT, "fixtures", "behind-bars-good.json")
@@ -185,6 +193,72 @@ def check_fill():
     return failures
 
 
+def check_generated_grids():
+    """Every grid the generator draws must satisfy the conventions.
+
+    The generator exists so nobody hand-draws a pattern and iterates against
+    the validator. That is only worth anything if what it draws passes first
+    time, every time — so it is checked against `check_grid`, the same
+    function the validator runs, across sizes and seeds.
+    """
+    failures = []
+    cases = [("blocked", 9, 9), ("blocked", 11, 11), ("blocked", 13, 13),
+             ("blocked", 15, 15), ("barred", 5, 7), ("barred", 7, 7)]
+    meta = {"title": "generated", "setter": "test"}
+    for style, height, width in cases:
+        for seed in range(4):
+            rng = random.Random(seed)
+            pz, errors = grid_mod.build(height, width, style, rng, meta)
+            label = f"{style} {height}x{width} seed {seed}"
+            if pz is None:
+                failures.append(f"grid.py could not draw {label}: {errors}")
+                continue
+            # Drawn clean is the claim; check_grid is what settles it.
+            remaining = puzzle_mod.check_grid(pz)
+            if remaining:
+                failures.append(f"grid.py drew an invalid {label}: {remaining}")
+            if not pz.slots:
+                failures.append(f"grid.py drew {label} with no entries at all")
+            if style == "barred" and len(pz.checked) != height * width:
+                failures.append(
+                    f"{label} should be fully checked, but "
+                    f"{height * width - len(pz.checked)} squares are not")
+    return failures
+
+
+def check_skill_example():
+    """The worked entry in SKILL.md must survive the checker it teaches.
+
+    It is inline precisely so nobody opens a 22KB fixture to learn the shape of
+    one entry. An example that no longer passes teaches the wrong shape.
+    """
+    text = open(SKILL).read()
+    blocks = re.findall(r"```json\n(.*?)```", text, re.S)
+    if not blocks:
+        return ["SKILL.md has no worked entry to check"]
+    try:
+        entry = json.loads(blocks[0])
+    except json.JSONDecodeError as exc:
+        return [f"the worked entry in SKILL.md is not valid JSON: {exc}"]
+    problems = clues.check_clue(entry)
+    return [f"the worked entry in SKILL.md fails the checker: {p}"
+            for p in problems]
+
+
+def check_skill_paths():
+    """Every $ROOT path SKILL.md names has to exist.
+
+    SKILL.md is the only file read up front, so a path in it that has moved
+    sends the reader looking, which is the cost this whole layout is avoiding.
+    """
+    text = open(SKILL).read()
+    missing = []
+    for path in sorted(set(re.findall(r"\$ROOT/([\w./-]+)", text))):
+        if not os.path.exists(os.path.join(ROOT, path)):
+            missing.append(f"SKILL.md points at $ROOT/{path}, which does not exist")
+    return missing
+
+
 def main():
     with open(SCHEMA_PATH) as fh:
         schema = json.load(fh)
@@ -201,7 +275,10 @@ def main():
     failures += check_barred_geometry()
     failures += check_references_cover_the_schema()
     failures += check_wordlist()
+    failures += check_generated_grids()
     failures += check_fill()
+    failures += check_skill_example()
+    failures += check_skill_paths()
 
     bad_errors = validate_file(BAD, schema)
     if not bad_errors:
@@ -234,8 +311,9 @@ def main():
           f"defects caught")
     print(f"    ({len(bad_errors)} errors reported on the bad fixture; "
           f"{len(BARRED_CASES)} barred grid defects caught)")
-    print("    word list banded and filtered; a grid fills from scratch and "
-          "every crossing agrees")
+    print("    word list banded and filtered; generated grids clean; a grid "
+          "fills from scratch and every crossing agrees")
+    print("    SKILL.md's worked entry passes the checker and its paths resolve")
     return 0
 
 
