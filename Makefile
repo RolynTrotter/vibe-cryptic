@@ -3,8 +3,11 @@ PLUGIN := plugins/cryptic-setter
 PUZZLE ?= $(PLUGIN)/fixtures/first-light-good.json
 OUT    ?= dist/puzzle.html
 OUT_FILL ?= dist/filled.json
+OUT_GRID ?= dist/grid.json
+SIZE   ?= 11
+STYLE  ?= blocked
 
-.PHONY: check validate build body bundle fill wordlist release-check clean
+.PHONY: check validate build body bundle grid fill wordlist release-check clean
 
 ## Run the calibration tests: good fixture clean, every planted defect caught.
 check:
@@ -15,6 +18,10 @@ validate:
 	python3 $(PLUGIN)/scripts/validate.py $(PLUGIN)/fixtures/first-light-good.json \
 	                                      $(PLUGIN)/fixtures/behind-bars-good.json
 	python3 $(PLUGIN)/scripts/validate.py --expect-fail $(PLUGIN)/fixtures/first-light-bad.json
+
+## Draw a grid: make grid SIZE=11 STYLE=blocked
+grid:
+	python3 $(PLUGIN)/scripts/grid.py --size $(SIZE) --style $(STYLE) -o $(OUT_GRID)
 
 ## Fill a grid: make fill GRID=path/to/grid.json
 fill:
